@@ -25,10 +25,12 @@
 #define GAME_STATE_WIN 4
 
 // Константы для уровней
-#define LEVEL_RANDOM 1
-#define LEVEL_MAZE 2
-#define LEVEL_ARENA 3
-#define MAX_LEVEL 3
+#define LEVEL_START 1
+#define LEVEL_TOWN 2
+#define LEVEL_TOWN_UP 3
+#define LEVEL_MAZE 4
+#define LEVEL_ARENA 5
+#define MAX_LEVEL 5
 
 // Константы
 #define WIDTH 1920

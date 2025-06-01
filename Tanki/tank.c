@@ -34,22 +34,8 @@ bool check_tank_collision(float x, float y, Tank* exclude_tank) {
 
 // Обновление танков ботов
 void update_bots(float dt) {
-    for (int i = 0; i < MAX_BOTS; i++) {
-        if (!bots[i].active) {
-            // Если бот неактивен и прошло время для респауна
-            if (bots[i].respawn_timer > 0) {
-                bots[i].respawn_timer--;
-                if (bots[i].respawn_timer <= 0) {
-                    // Восстанавливаем бота
-                    find_spawn_point(&bots[i].x, &bots[i].y);
-                    bots[i].health = bots[i].max_health;
-                    bots[i].active = true;
-                    bots[i].invulnerable_timer = 60; // 1 секунда неуязвимости при появлении
-                }
-            }
-            continue;
-        }
-
+    for (int i = 0; i < MAX_BOTS; i++)
+    {
         // Обновляем счетчики бота
         if (bots[i].cooldown > 0) bots[i].cooldown--;
         if (bots[i].invulnerable_timer > 0) bots[i].invulnerable_timer--;

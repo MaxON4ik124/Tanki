@@ -69,4 +69,21 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_arena.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_maze.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_start.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_town.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_town_pro.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

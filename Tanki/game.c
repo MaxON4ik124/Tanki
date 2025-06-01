@@ -21,9 +21,11 @@ float menu_animation = 0.3f;
 // Информация о уровне
 LevelInfo level_info[MAX_LEVEL + 1] = {
     {"", "", 0, 0}, // Нулевой индекс не используется
-    {"Случайный уровень", "Случайно сгенерированная карта с препятствиями", 3, 1},
-    {"Лабиринт", "Сложный лабиринт с множеством поворотов", 4, 2},
-    {"Арена", "Открытая арена с минимумом укрытий", 5, 3}
+    {"Стартовый уровень", "Тренировочная локация", 1, 1},
+    {"Обычный уровень", "Стандартная карта с средним количеством укрытий", 1, 1},
+    {"Обычный уровень (Дополнение)", "Карта как и на прошлом уровне, но врагов 2", 2, 1},
+    {"Лабиринт", "Карта с множеством поворотов и узкими проходами", 2, 1},
+    {"Арена", "Открытая арена с минимумом укрытий", 3, 1},
 };
 
 // Цвета для различных типов танков и объектов
@@ -81,22 +83,30 @@ void init_level(int level_num) {
 
     // Генерируем карту в зависимости от уровня
     switch (level_num) {
-    case LEVEL_RANDOM:
-        generate_random_map();
+    case LEVEL_START:
+        generate_map("map_start.txt");
+        find_spawn_point(&player.x, &player.y, 0);
+        break;
+    case LEVEL_TOWN:
+        generate_map("map_town.txt");
+        find_spawn_point(&player.x, &player.y, 0);
+        break;
+    case LEVEL_TOWN_UP:
+        generate_map("map_town_pro.txt");
+        find_spawn_point(&player.x, &player.y, 0);
         break;
     case LEVEL_MAZE:
-        generate_maze_map();
+        generate_map("map_maze.txt");
+        find_spawn_point(&player.x, &player.y, 0);
         break;
     case LEVEL_ARENA:
-        generate_arena_map();
-        break;
-    default:
-        generate_random_map();
+        generate_map("map_arena.txt");
+        find_spawn_point(&player.x, &player.y, 0);
         break;
     }
 
     // Сбрасываем позицию игрока
-    find_spawn_point(&player.x, &player.y);
+    
     player.angle = 0.0f;
     player.movement_angle = 0.0f;
     player.target_angle = 0.0f;
@@ -155,7 +165,7 @@ void init_level(int level_num) {
             bots[i].angle = (float)(rand() % 360);
             bots[i].movement_angle = bots[i].angle; // Изначально одинаковый угол
             bots[i].target_angle = bots[i].angle;
-            find_spawn_point(&bots[i].x, &bots[i].y);
+            find_spawn_point(&bots[i].x, &bots[i].y, 0);
 
             // Инициализация параметров ИИ
             bots[i].ai_timer = 0;

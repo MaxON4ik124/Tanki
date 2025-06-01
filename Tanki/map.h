@@ -10,10 +10,8 @@ extern int map[MAP_HEIGHT][MAP_WIDTH];
 extern int texture_map[MAP_HEIGHT][MAP_WIDTH];
 
 // Прототипы функций для работы с картой
-void generate_random_map(void);
-void generate_maze_map(void);
-void generate_arena_map(void);
 bool check_map_collision(float x, float y, float radius);
-void find_spawn_point(float* x, float* y);
+void find_spawn_point(float* x, float* y, int tankType);
+void generate_map(char* filename);
 
 #endif /* MAP_H */
