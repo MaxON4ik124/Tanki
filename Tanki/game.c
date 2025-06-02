@@ -179,8 +179,10 @@ void init_level(int level_num) {
     }
 
     // —оздаем начальные усилени€
-    for (int i = 0; i < 2; i++) {
-        spawn_powerup();
+    if (level_num >= 3)
+    {
+        for (int i = 0; i < 2; i++) 
+            spawn_powerup();
     }
 
     game_state = GAME_PLAYING;
@@ -217,7 +219,7 @@ void update_game(float dt) {
     }
 
     // ѕериодически создаем новые усилени€
-    if (powerup_spawn_timer <= 0 && game_state == GAME_PLAYING) {
+    if (powerup_spawn_timer <= 0 && game_state == GAME_PLAYING && level >= 3) {
         spawn_powerup();
         powerup_spawn_timer = 300 + rand() % 600; // 5-15 секунд до следующего усилени€
     }
@@ -241,6 +243,7 @@ void update_game(float dt) {
     if (all_bots_dead) {
         if (level < MAX_LEVEL) {
             level++;
+
             init_level(level);
         }
         else {

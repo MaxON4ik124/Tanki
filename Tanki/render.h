@@ -12,5 +12,5 @@ void draw_win_screen(void);
 void draw_pause_menu(void);
 void render(void);
 void draw_text(const char* text, float x, float y, float scale, float r, float g, float b);
-
+void render_level_transition(int window_width, int window_height, float fade_progress);
 #endif /* RENDER_H */

@@ -17,7 +17,8 @@ typedef enum {
     GAME_PLAYING,
     GAME_PAUSED,
     GAME_OVER,
-    GAME_WIN
+    GAME_WIN,
+    GAME_TRANSITION
 } GameState;
 
 // Типы ботов

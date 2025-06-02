@@ -332,11 +332,6 @@ void update_bullets(float dt) {
                     );
 
                     bullets[i].active = false;
-
-                    // Ўанс создать усиление при разрушении блока
-                    if (rand() % 10 == 0) {
-                        spawn_powerup();
-                    }
                 }
             }
         }
@@ -434,10 +429,6 @@ void check_collisions() {
                             // Ќачисление очков игроку
                             player.score += 100 * (bots[j].type + 1);
 
-                            // Ўанс создать усиление при уничтожении бота
-                            if (rand() % 3 == 0) {
-                                spawn_powerup();
-                            }
                         }
                     }
                 }
