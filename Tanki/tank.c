@@ -540,16 +540,16 @@ void draw_tank(Tank tank, bool is_player) {
     // Рисуем гусеницы
     glBegin(GL_QUADS);
     // Левая гусеница
-    glVertex2f(-TANK_SIZE / 2, -TANK_SIZE / 2);
-    glVertex2f(-TANK_SIZE / 2 + TANK_SIZE / 5, -TANK_SIZE / 2);
-    glVertex2f(-TANK_SIZE / 2 + TANK_SIZE / 5, TANK_SIZE / 2);
+    glVertex2f(-TANK_SIZE / 2, TANK_SIZE / 2 - TANK_SIZE / 5);
+    glVertex2f(TANK_SIZE / 2, TANK_SIZE / 2 - TANK_SIZE / 5);
+    glVertex2f(TANK_SIZE / 2, TANK_SIZE / 2);
     glVertex2f(-TANK_SIZE / 2, TANK_SIZE / 2);
 
     // Правая гусеница
-    glVertex2f(TANK_SIZE / 2 - TANK_SIZE / 5, -TANK_SIZE / 2);
+    glVertex2f(-TANK_SIZE / 2, -TANK_SIZE / 2);
     glVertex2f(TANK_SIZE / 2, -TANK_SIZE / 2);
-    glVertex2f(TANK_SIZE / 2, TANK_SIZE / 2);
-    glVertex2f(TANK_SIZE / 2 - TANK_SIZE / 5, TANK_SIZE / 2);
+    glVertex2f(TANK_SIZE / 2, -TANK_SIZE / 2 + TANK_SIZE / 5);
+    glVertex2f(-TANK_SIZE / 2, -TANK_SIZE / 2 + TANK_SIZE / 5);
     glEnd();
 
     // Рисуем корпус

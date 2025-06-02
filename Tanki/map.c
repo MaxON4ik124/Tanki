@@ -83,7 +83,6 @@ void find_spawn_point(float* x_pos, float* y_pos, int tankType) {
             {
                 *x_pos = x * TILE_SIZE;
                 *y_pos = y * TILE_SIZE;
-                printf("%f %f\n", *x_pos, *y_pos);
                 map[y][x] = TILE_EMPTY;
                 return;
             }
