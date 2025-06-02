@@ -57,8 +57,8 @@ void init_game() {
     // Инициализация игрока
     player.x = WIDTH / 2;
     player.y = HEIGHT / 2;
-    player.angle = 0.0f;
-    player.movement_angle = 0.0f;
+    player.angle = -90.0f;
+    player.movement_angle = -90.0f;
     player.target_angle = 0.0f;
     player.rotation_speed = 180.0f; // 180 градусов в секунду
     player.health = 100;
