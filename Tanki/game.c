@@ -18,6 +18,11 @@ int menu_selection = 0;
 float animation_time = 0.2f;
 float menu_animation = 0.3f;
 
+// Переменные для перехода между уровнями
+float transition_timer = 0.0f;
+int next_level = 1;
+bool transition_fade_out = true;
+
 // Информация о уровне
 LevelInfo level_info[MAX_LEVEL + 1] = {
     {"", "", 0, 0}, // Нулевой индекс не используется
@@ -72,6 +77,19 @@ void init_game() {
     level = 1;
     strcpy(game_message, "");
     message_timer = 0;
+
+    // Сброс переменных перехода
+    transition_timer = 0.0f;
+    next_level = 1;
+    transition_fade_out = true;
+}
+
+// Функция для начала перехода на следующий уровень
+void start_level_transition(int target_level) {
+    next_level = target_level;
+    transition_timer = 0.0f;
+    transition_fade_out = true;
+    game_state = GAME_LEVEL_TRANSITION;
 }
 
 // Инициализация конкретного уровня
@@ -106,7 +124,6 @@ void init_level(int level_num) {
     }
 
     // Сбрасываем позицию игрока
-    
     player.angle = 90.0f;
     player.movement_angle = 90.0f;
     player.target_angle = 0.0f;
@@ -179,16 +196,38 @@ void init_level(int level_num) {
     }
 
     // Создаем начальные усиления
-    if (level_num >= 3)
-    {
-        for (int i = 0; i < 2; i++) 
+    if (level_num >= 3) {
+        for (int i = 0; i < 2; i++)
             spawn_powerup();
     }
 
-    game_state = GAME_PLAYING;
+    level = level_num;
     sprintf(game_message, "Уровень %d: %s", level_num, level_info[level_num].name);
     message_timer = 180; // 3 секунды
     powerup_spawn_timer = 300; // 5 секунд до появления нового усиления
+}
+
+// Обновление перехода между уровнями
+void update_level_transition(float dt) {
+    transition_timer += dt;
+
+    if (transition_fade_out) {
+        // Фаза затемнения
+        if (transition_timer >= FADE_OUT_TIME) {
+            // Переходим к инициализации нового уровня
+            init_level(next_level);
+            transition_fade_out = false;
+            transition_timer = 0.0f;
+        }
+    }
+    else {
+        // Фаза осветления
+        if (transition_timer >= FADE_IN_TIME) {
+            // Переход завершен, возвращаемся к игре
+            game_state = GAME_PLAYING;
+            transition_timer = 0.0f;
+        }
+    }
 }
 
 // Обновление состояния игры
@@ -242,9 +281,9 @@ void update_game(float dt) {
 
     if (all_bots_dead) {
         if (level < MAX_LEVEL) {
-            level++;
-
-            init_level(level);
+            // Начинаем переход на следующий уровень
+            game_state = GAME_LEVEL_TRANSITION;
+            start_level_transition(level + 1);
         }
         else {
             game_state = GAME_WIN;

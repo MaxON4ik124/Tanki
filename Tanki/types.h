@@ -1,6 +1,6 @@
 #ifndef TYPES_H
 #define TYPES_H
-
+#include "main.h"
 // Типы усилений (powerups)
 typedef enum {
     POWERUP_HEALTH,
@@ -18,7 +18,7 @@ typedef enum {
     GAME_PAUSED,
     GAME_OVER,
     GAME_WIN,
-    GAME_TRANSITION
+    GAME_LEVEL_TRANSITION
 } GameState;
 
 // Типы ботов

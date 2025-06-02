@@ -404,12 +404,11 @@ void render() {
     glLoadIdentity();
 
     // Отрисовка в зависимости от состояния игры
-    switch (game_state) {
-    case GAME_MENU:
-        draw_menu();
-        break;
 
-    case GAME_PLAYING:
+    if(game_state == GAME_MENU)
+        draw_menu();
+
+    if (game_state == GAME_PLAYING) {
         // Рисуем игровые объекты
         draw_map();
 
@@ -443,9 +442,11 @@ void render() {
 
         // Рисуем интерфейс
         draw_ui();
-        break;
+    }
+    if(game_state == GAME_LEVEL_TRANSITION)
+        draw_level_transition();
 
-    case GAME_PAUSED:
+    if (game_state == GAME_PAUSED) {
         // Рисуем игровой мир под меню паузы
         draw_map();
 
@@ -482,14 +483,108 @@ void render() {
 
         // Рисуем меню паузы поверх всего
         draw_pause_menu();
-        break;
-
-    case GAME_OVER:
-        draw_game_over();
-        break;
-
-    case GAME_WIN:
-        draw_win_screen();
-        break;
     }
+    if (game_state == GAME_OVER)
+        draw_game_over();
+
+    if (game_state == GAME_WIN)
+        draw_win_screen();
+
+    
+}
+// Отрисовка перехода между уровнями
+void draw_level_transition() {
+    float alpha = 0.0f;
+
+    if (transition_fade_out) {
+        // Фаза затемнения - альфа увеличивается от 0 до 1
+        alpha = transition_timer / FADE_OUT_TIME;
+        if (alpha > 1.0f) alpha = 1.0f;
+    }
+    else {
+        // Фаза осветления - альфа уменьшается от 1 до 0
+        alpha = 1.0f - (transition_timer / FADE_IN_TIME);
+        if (alpha < 0.0f) alpha = 0.0f;
+    }
+
+    // Рисуем игровой мир (если он еще не затемнен полностью)
+    if (!transition_fade_out || alpha < 1.0f) {
+        draw_map();
+
+        // Рисуем усиления
+        for (int i = 0; i < MAX_POWERUPS; i++) {
+            if (powerups[i].active) {
+                draw_powerup(powerups[i]);
+            }
+        }
+
+        // Рисуем снаряды
+        for (int i = 0; i < MAX_BULLETS * (MAX_BOTS + 1); i++) {
+            if (bullets[i].active) {
+                draw_bullet(bullets[i]);
+            }
+        }
+
+        // Рисуем танки
+        if (player.active) {
+            draw_tank(player, true);
+        }
+
+        for (int i = 0; i < MAX_BOTS; i++) {
+            if (bots[i].active) {
+                draw_tank(bots[i], false);
+            }
+        }
+
+        // Рисуем частицы
+        draw_particles();
+
+        // Рисуем интерфейс
+        draw_ui();
+    }
+
+    // Затемняющий слой
+    glColor4f(0.0f, 0.0f, 0.0f, alpha);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBegin(GL_QUADS);
+    glVertex2f(0, 0);
+    glVertex2f(WIDTH, 0);
+    glVertex2f(WIDTH, HEIGHT);
+    glVertex2f(0, HEIGHT);
+    glEnd();
+
+    // Текст перехода (показываем в середине перехода)
+    if (transition_fade_out && alpha > 0.5f) {
+        float text_alpha = (alpha - 0.5f) * 2.0f; // Появляется во второй половине затемнения
+
+        glColor4f(1.0f, 1.0f, 1.0f, text_alpha);
+
+        char transition_text[100];
+        if (next_level <= MAX_LEVEL) {
+            sprintf(transition_text, "Уровень %d", next_level);
+            draw_text(transition_text, WIDTH / 2 - 100, HEIGHT / 2 - 50, 2.0f, 1.0f, 1.0f, 1.0f);
+
+            sprintf(transition_text, "%s", level_info[next_level].name);
+            draw_text(transition_text, WIDTH / 2 - 150, HEIGHT / 2, 1.5f, 0.8f, 0.8f, 0.8f);
+
+            draw_text(level_info[next_level].description, WIDTH / 2 - 200, HEIGHT / 2 + 40, 1.0f, 0.6f, 0.6f, 0.6f);
+        }
+    }
+
+    // Анимированные эффекты для красоты
+    if (alpha > 0.3f) {
+        glPointSize(2.0f + sin(animation_time * 4) * 0.5f);
+        glColor4f(0.3f, 0.6f, 1.0f, alpha * 0.7f);
+        glBegin(GL_POINTS);
+        for (int i = 0; i < 100; i++) {
+            float x = (sin(i * 1.23f + animation_time * 2) + 1) / 2 * WIDTH;
+            float y = (cos(i * 2.34f + animation_time * 1.5f) + 1) / 2 * HEIGHT;
+            glVertex2f(x, y);
+        }
+        glEnd();
+    }
+
+    glDisable(GL_BLEND);
 }

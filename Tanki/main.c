@@ -35,6 +35,9 @@ int main() {
         if (game_state == GAME_PLAYING) {
             update_game(delta_time);
         }
+        else if (game_state == GAME_LEVEL_TRANSITION) {
+            update_level_transition(delta_time);
+        }
 
         render();
         glfwSwapBuffers(window);

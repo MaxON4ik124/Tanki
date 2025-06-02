@@ -18,11 +18,12 @@
 #define TILE_ICE 4
 
 // Константы для состояний игры
-#define GAME_STATE_MENU 0
-#define GAME_STATE_PLAYING 1
-#define GAME_STATE_PAUSED 2
-#define GAME_STATE_GAME_OVER 3
-#define GAME_STATE_WIN 4
+//#define GAME_MENU 0
+//#define GAME_PLAYING 1
+//#define GAME_PAUSED 2
+//#define GAME_OVER 3
+//#define GAME_WIN 4
+//#define GAME_LEVEL_TRANSITION 5  // Новое состояние для перехода между уровнями
 
 // Константы для уровней
 #define LEVEL_START 1
@@ -51,6 +52,11 @@
 #define TILE_SIZE (WIDTH / MAP_WIDTH)
 #define M_PI 3.14f
 
+// Константы для перехода между уровнями
+#define TRANSITION_DURATION 2.0f  // Длительность перехода в секундах
+#define FADE_OUT_TIME 1.0f        // Время затемнения
+#define FADE_IN_TIME 1.0f         // Время осветления
+
 #include "types.h"
 #include "map.h"
 #include "tank.h"
@@ -77,6 +83,11 @@ extern int powerup_spawn_timer;
 extern int menu_selection;
 extern float animation_time;
 extern float menu_animation;
+
+// Переменные для перехода между уровнями
+extern float transition_timer;
+extern int next_level;
+extern bool transition_fade_out;
 
 // Массив частиц для эффектов
 #define MAX_PARTICLES 1000
