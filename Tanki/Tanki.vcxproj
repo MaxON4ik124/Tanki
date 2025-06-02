@@ -154,11 +154,11 @@
     <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_arena.txt" />
-    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_maze.txt" />
-    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_start.txt" />
-    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_town.txt" />
-    <Text Include="..\..\Kyrsovaya\Kyrsovaya\map_town_pro.txt" />
+    <Text Include="map_arena.txt" />
+    <Text Include="map_maze.txt" />
+    <Text Include="map_start.txt" />
+    <Text Include="map_town.txt" />
+    <Text Include="map_town_pro.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

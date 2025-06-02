@@ -107,7 +107,7 @@ void init_level(int level_num) {
 
     // Сбрасываем позицию игрока
     
-    player.angle = 0.0f;
+    player.angle = 90.0f;
     player.movement_angle = 0.0f;
     player.target_angle = 0.0f;
     player.health = player.max_health;
@@ -163,7 +163,7 @@ void init_level(int level_num) {
 
             bots[i].active = true;
             bots[i].angle = (float)(rand() % 360);
-            bots[i].movement_angle = bots[i].angle; // Изначально одинаковый угол
+            bots[i].movement_angle = bots[i].angle - 90.0f; // Изначально одинаковый угол
             bots[i].target_angle = bots[i].angle;
             find_spawn_point(&bots[i].x, &bots[i].y, 1);
 

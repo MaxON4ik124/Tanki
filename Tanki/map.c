@@ -22,7 +22,10 @@ void generate_map(char* filename)
         for (int x = 1; x < MAP_WIDTH - 1; x++) {
             fscanf(mapfile, "%d", &map[y][x]);
             texture_map[y][x] = rand() % 4;
+            printf("%d", map[y][x]);
+
         }
+        printf("\n");
     }
     fclose(mapfile);
 }
