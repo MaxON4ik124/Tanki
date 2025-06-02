@@ -36,242 +36,245 @@ bool check_tank_collision(float x, float y, Tank* exclude_tank) {
 void update_bots(float dt) {
     for (int i = 0; i < MAX_BOTS; i++)
     {
-        // Обновляем счетчики бота
-        if (bots[i].cooldown > 0) bots[i].cooldown--;
-        if (bots[i].invulnerable_timer > 0) bots[i].invulnerable_timer--;
+        if (bots[i].active)
+        {
+            // Обновляем счетчики бота
+            if (bots[i].cooldown > 0) bots[i].cooldown--;
+            if (bots[i].invulnerable_timer > 0) bots[i].invulnerable_timer--;
 
-        // Обновляем ИИ бота
-        bots[i].ai_timer += dt;
-        bots[i].ai_state_timer -= dt;
+            // Обновляем ИИ бота
+            bots[i].ai_timer += dt;
+            bots[i].ai_state_timer -= dt;
 
-        // Проверяем стоит ли бот на специальном тайле
-        int tile_x = (int)(bots[i].x / TILE_SIZE);
-        int tile_y = (int)(bots[i].y / TILE_SIZE);
+            // Проверяем стоит ли бот на специальном тайле
+            int tile_x = (int)(bots[i].x / TILE_SIZE);
+            int tile_y = (int)(bots[i].y / TILE_SIZE);
 
-        float speed_multiplier = 1.0f;
-        if (tile_x >= 0 && tile_x < MAP_WIDTH && tile_y >= 0 && tile_y < MAP_HEIGHT) {
-            if (map[tile_y][tile_x] == TILE_ICE) {
-                speed_multiplier = 1.5f; // Ускорение на льду
-            }
-            else if (map[tile_y][tile_x] == TILE_WATER) {
-                speed_multiplier = 0.5f; // Замедление в воде
-            }
-        }
-
-        // Вычисляем скорость бота с учетом типа и текущих условий
-        bots[i].speed = bots[i].base_speed * speed_multiplier;
-
-        // Логика ИИ ботов
-        switch (bots[i].ai_state) {
-        case 0: // Патрулирование
-            if (bots[i].ai_state_timer <= 0) {
-                // Выбор новой точки патрулирования
-                float angle = (float)(rand() % 360) * M_PI / 180.0f;
-                bots[i].target_x = bots[i].x + cosf(angle) * 300.0f;
-                bots[i].target_y = bots[i].y + sinf(angle) * 300.0f;
-
-                // Ограничиваем точку границами карты
-                bots[i].target_x = fmaxf(TILE_SIZE, fminf(WIDTH - TILE_SIZE, bots[i].target_x));
-                bots[i].target_y = fmaxf(TILE_SIZE, fminf(HEIGHT - TILE_SIZE, bots[i].target_y));
-
-                bots[i].ai_state_timer = 2.0f + (rand() % 30) / 10.0f; // 2-5 секунд
+            float speed_multiplier = 1.0f;
+            if (tile_x >= 0 && tile_x < MAP_WIDTH && tile_y >= 0 && tile_y < MAP_HEIGHT) {
+                if (map[tile_y][tile_x] == TILE_ICE) {
+                    speed_multiplier = 1.5f; // Ускорение на льду
+                }
+                else if (map[tile_y][tile_x] == TILE_WATER) {
+                    speed_multiplier = 0.5f; // Замедление в воде
+                }
             }
 
-            // Движение к точке патрулирования
-            float dx = bots[i].target_x - bots[i].x;
-            float dy = bots[i].target_y - bots[i].y;
-            float dist = sqrtf(dx * dx + dy * dy);
+            // Вычисляем скорость бота с учетом типа и текущих условий
+            bots[i].speed = bots[i].base_speed * speed_multiplier;
 
-            if (dist > 5.0f) {
-                float angle = atan2f(dy, dx);
-                bots[i].angle = angle * 180.0f / M_PI;
+            // Логика ИИ ботов
+            switch (bots[i].ai_state) {
+            case 0: // Патрулирование
+                if (bots[i].ai_state_timer <= 0) {
+                    // Выбор новой точки патрулирования
+                    float angle = (float)(rand() % 360) * M_PI / 180.0f;
+                    bots[i].target_x = bots[i].x + cosf(angle) * 300.0f;
+                    bots[i].target_y = bots[i].y + sinf(angle) * 300.0f;
 
-                float move_x = cosf(angle) * bots[i].speed * dt;
-                float move_y = sinf(angle) * bots[i].speed * dt;
+                    // Ограничиваем точку границами карты
+                    bots[i].target_x = fmaxf(TILE_SIZE, fminf(WIDTH - TILE_SIZE, bots[i].target_x));
+                    bots[i].target_y = fmaxf(TILE_SIZE, fminf(HEIGHT - TILE_SIZE, bots[i].target_y));
 
-                float new_x = bots[i].x + move_x;
-                float new_y = bots[i].y + move_y;
+                    bots[i].ai_state_timer = 2.0f + (rand() % 30) / 10.0f; // 2-5 секунд
+                }
 
-                // Проверка столкновений с картой
-                if (!check_map_collision(new_x, bots[i].y, TANK_SIZE / 2)) {
-                    bots[i].x = new_x;
+                // Движение к точке патрулирования
+                float dx = bots[i].target_x - bots[i].x;
+                float dy = bots[i].target_y - bots[i].y;
+                float dist = sqrtf(dx * dx + dy * dy);
+
+                if (dist > 5.0f) {
+                    float angle = atan2f(dy, dx);
+                    bots[i].angle = angle * 180.0f / M_PI;
+
+                    float move_x = cosf(angle) * bots[i].speed * dt;
+                    float move_y = sinf(angle) * bots[i].speed * dt;
+
+                    float new_x = bots[i].x + move_x;
+                    float new_y = bots[i].y + move_y;
+
+                    // Проверка столкновений с картой
+                    if (!check_map_collision(new_x, bots[i].y, TANK_SIZE / 2)) {
+                        bots[i].x = new_x;
+                    }
+                    else {
+                        // Если столкнулись со стеной, выбираем новую цель
+                        bots[i].ai_state_timer = 0;
+                    }
+
+                    if (!check_map_collision(bots[i].x, new_y, TANK_SIZE / 2)) {
+                        bots[i].y = new_y;
+                    }
+                    else {
+                        bots[i].ai_state_timer = 0;
+                    }
+                }
+
+                // Периодически проверяем, виден ли игрок
+                if (bots[i].ai_timer >= 0.5f) {
+                    bots[i].ai_timer = 0;
+
+                    // Проверяем, есть ли прямая видимость до игрока
+                    if (player.active) {
+                        float dx = player.x - bots[i].x;
+                        float dy = player.y - bots[i].y;
+                        float dist = sqrtf(dx * dx + dy * dy);
+
+                        // Если игрок достаточно близко
+                        if (dist < 400.0f) {
+                            // Проверяем прямую видимость
+                            bool line_of_sight = true;
+                            float step_x = dx / dist;
+                            float step_y = dy / dist;
+                            float check_x = bots[i].x;
+                            float check_y = bots[i].y;
+
+                            for (int j = 0; j < (int)dist; j += 10) {
+                                check_x += step_x * 10;
+                                check_y += step_y * 10;
+
+                                int tile_x = (int)(check_x / TILE_SIZE);
+                                int tile_y = (int)(check_y / TILE_SIZE);
+
+                                if (tile_x >= 0 && tile_x < MAP_WIDTH && tile_y >= 0 && tile_y < MAP_HEIGHT) {
+                                    if (map[tile_y][tile_x] == TILE_WALL || map[tile_y][tile_x] == TILE_BREAKABLE) {
+                                        line_of_sight = false;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (line_of_sight) {
+                                bots[i].ai_state = 1; // Переходим в состояние преследования
+                                bots[i].ai_state_timer = 5.0f; // Преследуем 5 секунд
+                            }
+                        }
+                    }
+                }
+                break;
+
+            case 1: // Преследование игрока
+                if (bots[i].ai_state_timer <= 0 || !player.active) {
+                    bots[i].ai_state = 0; // Возвращаемся к патрулированию
+                    bots[i].ai_state_timer = 1.0f;
                 }
                 else {
-                    // Если столкнулись со стеной, выбираем новую цель
-                    bots[i].ai_state_timer = 0;
-                }
-
-                if (!check_map_collision(bots[i].x, new_y, TANK_SIZE / 2)) {
-                    bots[i].y = new_y;
-                }
-                else {
-                    bots[i].ai_state_timer = 0;
-                }
-            }
-
-            // Периодически проверяем, виден ли игрок
-            if (bots[i].ai_timer >= 0.5f) {
-                bots[i].ai_timer = 0;
-
-                // Проверяем, есть ли прямая видимость до игрока
-                if (player.active) {
+                    // Преследование игрока
                     float dx = player.x - bots[i].x;
                     float dy = player.y - bots[i].y;
                     float dist = sqrtf(dx * dx + dy * dy);
 
-                    // Если игрок достаточно близко
-                    if (dist < 400.0f) {
-                        // Проверяем прямую видимость
-                        bool line_of_sight = true;
-                        float step_x = dx / dist;
-                        float step_y = dy / dist;
-                        float check_x = bots[i].x;
-                        float check_y = bots[i].y;
+                    if (dist > 0) {
+                        float angle = atan2f(dy, dx);
+                        bots[i].angle = angle * 180.0f / M_PI;
 
-                        for (int j = 0; j < (int)dist; j += 10) {
-                            check_x += step_x * 10;
-                            check_y += step_y * 10;
+                        // В зависимости от типа бота, поведение может различаться
+                        bool should_move = true;
+                        float shoot_range = 300.0f;
 
-                            int tile_x = (int)(check_x / TILE_SIZE);
-                            int tile_y = (int)(check_y / TILE_SIZE);
+                        switch (bots[i].type) {
+                        case BOT_SNIPER:
+                            // Снайпер держит дистанцию
+                            shoot_range = 500.0f;
+                            if (dist < 200.0f) {
+                                // Отступаем, если игрок слишком близко
+                                angle += M_PI;
+                            }
+                            else if (dist < 300.0f) {
+                                // Прекращаем движение, если на оптимальной дистанции
+                                should_move = false;
+                            }
+                            break;
+                        case BOT_FAST:
+                            // Быстрый бот агрессивно сближается
+                            shoot_range = 200.0f;
+                            break;
+                        case BOT_HEAVY:
+                            // Тяжелый бот предпочитает среднюю дистанцию
+                            if (dist < 150.0f) {
+                                angle += M_PI;
+                            }
+                            break;
+                        default:
+                            // BOT_REGULAR - стандартное поведение
+                            break;
+                        }
 
-                            if (tile_x >= 0 && tile_x < MAP_WIDTH && tile_y >= 0 && tile_y < MAP_HEIGHT) {
-                                if (map[tile_y][tile_x] == TILE_WALL || map[tile_y][tile_x] == TILE_BREAKABLE) {
-                                    line_of_sight = false;
+                        if (should_move) {
+                            float move_x = cosf(angle) * bots[i].speed * dt;
+                            float move_y = sinf(angle) * bots[i].speed * dt;
+
+                            float new_x = bots[i].x + move_x;
+                            float new_y = bots[i].y + move_y;
+
+                            if (!check_map_collision(new_x, bots[i].y, TANK_SIZE / 2) &&
+                                !check_tank_collision(new_x, bots[i].y, &bots[i])) {
+                                bots[i].x = new_x;
+                            }
+
+                            if (!check_map_collision(bots[i].x, new_y, TANK_SIZE / 2) &&
+                                !check_tank_collision(bots[i].x, new_y, &bots[i])) {
+                                bots[i].y = new_y;
+                            }
+                        }
+
+                        // Стрельба по игроку
+                        if (dist < shoot_range && bots[i].cooldown <= 0) {
+                            float aim_angle = atan2f(dy, dx) * 180.0f / M_PI;
+                            bots[i].angle = aim_angle;
+
+                            // Поиск свободного слота для снаряда
+                            for (int j = MAX_BULLETS; j < MAX_BULLETS * (MAX_BOTS + 1); j++) {
+                                if (!bullets[j].active) {
+                                    float rad = aim_angle * M_PI / 180.0f;
+                                    bullets[j].x = bots[i].x + cosf(rad) * TANK_SIZE;
+                                    bullets[j].y = bots[i].y + sinf(rad) * TANK_SIZE;
+                                    bullets[j].dx = cosf(rad) * BULLET_SPEED;
+                                    bullets[j].dy = sinf(rad) * BULLET_SPEED;
+                                    bullets[j].active = true;
+                                    bullets[j].is_player = false;
+                                    bullets[j].damage = 20; // Базовый урон бота
+                                    bullets[j].life_time = 2.0f; // Время жизни снаряда
+
+                                    // Усиленный урон для снайпера
+                                    if (bots[i].type == BOT_SNIPER) {
+                                        bullets[j].damage = 40;
+                                    }
+
+                                    // Эффект выстрела
+                                    add_particles(
+                                        bullets[j].x, bullets[j].y,
+                                        1.0f, 0.5f, 0.2f,  // Оранжевые частицы
+                                        8,                  // Количество частиц
+                                        40.0f,              // Скорость разлета
+                                        2.5f,               // Размер
+                                        0.4f                // Время жизни
+                                    );
                                     break;
                                 }
                             }
-                        }
 
-                        if (line_of_sight) {
-                            bots[i].ai_state = 1; // Переходим в состояние преследования
-                            bots[i].ai_state_timer = 5.0f; // Преследуем 5 секунд
-                        }
-                    }
-                }
-            }
-            break;
-
-        case 1: // Преследование игрока
-            if (bots[i].ai_state_timer <= 0 || !player.active) {
-                bots[i].ai_state = 0; // Возвращаемся к патрулированию
-                bots[i].ai_state_timer = 1.0f;
-            }
-            else {
-                // Преследование игрока
-                float dx = player.x - bots[i].x;
-                float dy = player.y - bots[i].y;
-                float dist = sqrtf(dx * dx + dy * dy);
-
-                if (dist > 0) {
-                    float angle = atan2f(dy, dx);
-                    bots[i].angle = angle * 180.0f / M_PI;
-
-                    // В зависимости от типа бота, поведение может различаться
-                    bool should_move = true;
-                    float shoot_range = 300.0f;
-
-                    switch (bots[i].type) {
-                    case BOT_SNIPER:
-                        // Снайпер держит дистанцию
-                        shoot_range = 500.0f;
-                        if (dist < 200.0f) {
-                            // Отступаем, если игрок слишком близко
-                            angle += M_PI;
-                        }
-                        else if (dist < 300.0f) {
-                            // Прекращаем движение, если на оптимальной дистанции
-                            should_move = false;
-                        }
-                        break;
-                    case BOT_FAST:
-                        // Быстрый бот агрессивно сближается
-                        shoot_range = 200.0f;
-                        break;
-                    case BOT_HEAVY:
-                        // Тяжелый бот предпочитает среднюю дистанцию
-                        if (dist < 150.0f) {
-                            angle += M_PI;
-                        }
-                        break;
-                    default:
-                        // BOT_REGULAR - стандартное поведение
-                        break;
-                    }
-
-                    if (should_move) {
-                        float move_x = cosf(angle) * bots[i].speed * dt;
-                        float move_y = sinf(angle) * bots[i].speed * dt;
-
-                        float new_x = bots[i].x + move_x;
-                        float new_y = bots[i].y + move_y;
-
-                        if (!check_map_collision(new_x, bots[i].y, TANK_SIZE / 2) &&
-                            !check_tank_collision(new_x, bots[i].y, &bots[i])) {
-                            bots[i].x = new_x;
-                        }
-
-                        if (!check_map_collision(bots[i].x, new_y, TANK_SIZE / 2) &&
-                            !check_tank_collision(bots[i].x, new_y, &bots[i])) {
-                            bots[i].y = new_y;
-                        }
-                    }
-
-                    // Стрельба по игроку
-                    if (dist < shoot_range && bots[i].cooldown <= 0) {
-                        float aim_angle = atan2f(dy, dx) * 180.0f / M_PI;
-                        bots[i].angle = aim_angle;
-
-                        // Поиск свободного слота для снаряда
-                        for (int j = MAX_BULLETS; j < MAX_BULLETS * (MAX_BOTS + 1); j++) {
-                            if (!bullets[j].active) {
-                                float rad = aim_angle * M_PI / 180.0f;
-                                bullets[j].x = bots[i].x + cosf(rad) * TANK_SIZE;
-                                bullets[j].y = bots[i].y + sinf(rad) * TANK_SIZE;
-                                bullets[j].dx = cosf(rad) * BULLET_SPEED;
-                                bullets[j].dy = sinf(rad) * BULLET_SPEED;
-                                bullets[j].active = true;
-                                bullets[j].is_player = false;
-                                bullets[j].damage = 20; // Базовый урон бота
-                                bullets[j].life_time = 2.0f; // Время жизни снаряда
-
-                                // Усиленный урон для снайпера
-                                if (bots[i].type == BOT_SNIPER) {
-                                    bullets[j].damage = 40;
-                                }
-
-                                // Эффект выстрела
-                                add_particles(
-                                    bullets[j].x, bullets[j].y,
-                                    1.0f, 0.5f, 0.2f,  // Оранжевые частицы
-                                    8,                  // Количество частиц
-                                    40.0f,              // Скорость разлета
-                                    2.5f,               // Размер
-                                    0.4f                // Время жизни
-                                );
+                            // Установка перезарядки в зависимости от типа бота
+                            switch (bots[i].type) {
+                            case BOT_SNIPER:
+                                bots[i].cooldown = RELOAD_TIME * 2;
+                                break;
+                            case BOT_FAST:
+                                bots[i].cooldown = RELOAD_TIME * 0.8;
+                                break;
+                            case BOT_HEAVY:
+                                bots[i].cooldown = RELOAD_TIME * 1.5;
+                                break;
+                            default:
+                                bots[i].cooldown = RELOAD_TIME;
                                 break;
                             }
                         }
-
-                        // Установка перезарядки в зависимости от типа бота
-                        switch (bots[i].type) {
-                        case BOT_SNIPER:
-                            bots[i].cooldown = RELOAD_TIME * 2;
-                            break;
-                        case BOT_FAST:
-                            bots[i].cooldown = RELOAD_TIME * 0.8;
-                            break;
-                        case BOT_HEAVY:
-                            bots[i].cooldown = RELOAD_TIME * 1.5;
-                            break;
-                        default:
-                            bots[i].cooldown = RELOAD_TIME;
-                            break;
-                        }
                     }
                 }
+                break;
             }
-            break;
         }
     }
 }
@@ -383,7 +386,7 @@ void check_collisions() {
                     // Если здоровье закончилось
                     if (player.health <= 0) {
                         player.active = false;
-                        player.respawn_timer = RESPAWN_TIME;
+                        /*player.respawn_timer = RESPAWN_TIME;*/
 
                         // Большой взрыв при уничтожении танка
                         create_explosion(
@@ -577,10 +580,10 @@ void draw_tank(Tank tank, bool is_player) {
     // Рисуем ствол
     glColor3f(color[0] * 0.6f, color[1] * 0.6f, color[2] * 0.6f);
     glBegin(GL_QUADS);
-    glVertex2f(-TANK_SIZE / 20, 0);
-    glVertex2f(TANK_SIZE / 20, 0);
-    glVertex2f(TANK_SIZE / 20, TANK_SIZE / 2 + TANK_SIZE / 10);
-    glVertex2f(-TANK_SIZE / 20, TANK_SIZE / 2 + TANK_SIZE / 10);
+    glVertex2f(0, -TANK_SIZE / 20);
+    glVertex2f(TANK_SIZE / 2 + TANK_SIZE / 10, -TANK_SIZE / 20);
+    glVertex2f(TANK_SIZE / 2 + TANK_SIZE / 10, TANK_SIZE / 20);
+    glVertex2f(0, TANK_SIZE / 20);
     glEnd();
 
     // Рисуем щит, если он активен

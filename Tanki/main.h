@@ -41,8 +41,8 @@
 #define BOT_SPEED 100.0f
 #define BULLET_SPEED 800.0f
 #define MAX_BULLETS 10
-#define MAP_WIDTH 38
-#define MAP_HEIGHT 21
+#define MAP_WIDTH 39
+#define MAP_HEIGHT 23
 #define MAX_BOTS 5
 #define MAX_POWERUPS 5
 #define POWERUP_SIZE 25

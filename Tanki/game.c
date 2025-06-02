@@ -165,7 +165,7 @@ void init_level(int level_num) {
             bots[i].angle = (float)(rand() % 360);
             bots[i].movement_angle = bots[i].angle; // Изначально одинаковый угол
             bots[i].target_angle = bots[i].angle;
-            find_spawn_point(&bots[i].x, &bots[i].y, 0);
+            find_spawn_point(&bots[i].x, &bots[i].y, 1);
 
             // Инициализация параметров ИИ
             bots[i].ai_timer = 0;

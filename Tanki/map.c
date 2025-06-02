@@ -24,6 +24,7 @@ void generate_map(char* filename)
             texture_map[y][x] = rand() % 4;
         }
     }
+    fclose(mapfile);
 }
 
 // ѕроверка столкновени€ танка с картой
@@ -70,16 +71,17 @@ void find_spawn_point(float* x_pos, float* y_pos, int tankType) {
         {
             if (map[y][x] == 10 && tankType == 0)
             {
-                *x_pos = x;
-                *y_pos = y;
-                map[y][x] == TILE_EMPTY;
+                *x_pos = x * TILE_SIZE;
+                *y_pos = y * TILE_SIZE;
+                map[y][x] = TILE_EMPTY;
                 return;
             }
             if (map[y][x] == 11 && tankType == 1)
             {
-                *x_pos = x;
-                *y_pos = y;
-                map[y][x] == TILE_EMPTY;
+                *x_pos = x * TILE_SIZE;
+                *y_pos = y * TILE_SIZE;
+                printf("%f %f\n", *x_pos, *y_pos);
+                map[y][x] = TILE_EMPTY;
                 return;
             }
         }

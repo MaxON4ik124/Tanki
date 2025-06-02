@@ -51,10 +51,10 @@ void process_input(GLFWwindow* window) {
 
         // Поворот башни с помощью стрелок (или у нас может быть поворот в сторону мыши)
         // В этом примере башня вращается с использованием стрелок
-        if (keys[GLFW_KEY_LEFT]) {
+        if (keys[GLFW_KEY_Q]) {
             player.target_angle -= player.rotation_speed * delta_time;
         }
-        if (keys[GLFW_KEY_RIGHT]) {
+        if (keys[GLFW_KEY_E]) {
             player.target_angle += player.rotation_speed * delta_time;
         }
 
@@ -203,7 +203,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_D) {
         keys[GLFW_KEY_D] = (action != GLFW_RELEASE);
     }
-
+    if (key == GLFW_KEY_Q) {
+        keys[GLFW_KEY_Q] = (action != GLFW_RELEASE);
+    }
+    if (key == GLFW_KEY_E) {
+        keys[GLFW_KEY_E] = (action != GLFW_RELEASE);
+    }
     // Обработка клавиши стрельбы
     if (key == GLFW_KEY_SPACE) {
         keys[GLFW_KEY_SPACE] = (action != GLFW_RELEASE);
