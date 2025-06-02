@@ -589,7 +589,7 @@ void draw_tank(Tank tank, bool is_player) {
     // Рисуем щит, если он активен
     if (tank.shield_timer > 0) {
         float shield_alpha = 0.3f + 0.2f * sinf(animation_time * 5.0f);
-        glColor4f(0.0f, 0.6f, 1.0f, shield_alpha);
+        glColor4f(0.0f, 0.6f, 1.0f, 0.5f);
         glBegin(GL_TRIANGLE_FAN);
         glVertex2f(0, 0); // Центр круга
         for (int i = 0; i <= 360; i += 20) {

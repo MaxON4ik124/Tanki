@@ -112,7 +112,7 @@ void apply_powerup(PowerupType type) {
 
     case POWERUP_SPEED:
         // ”величение скорости
-        player.base_speed = TANK_SIZE * 3.0f;
+        player.base_speed = TANK_SIZE * 5.0f;
         strcpy(game_message, "—корость увеличена!");
         // Ёффект скорости длитс€ 10 секунд, затем сбрасываетс€
         for (int i = 0; i < MAX_BULLETS * (MAX_BOTS + 1); i++) {

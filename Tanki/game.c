@@ -108,7 +108,7 @@ void init_level(int level_num) {
     // —брасываем позицию игрока
     
     player.angle = 90.0f;
-    player.movement_angle = 0.0f;
+    player.movement_angle = 90.0f;
     player.target_angle = 0.0f;
     player.health = player.max_health;
     player.active = true;
