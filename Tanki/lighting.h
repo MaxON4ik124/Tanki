@@ -35,5 +35,6 @@ bool is_point_visible(float x, float y, float player_x, float player_y, float pl
 void play_warning_sound(void);
 void render_darkness_overlay(void);
 void render_warning_pulse(void);
-
+int init_audio(void);
+void cleanup_audio(void);
 #endif /* LIGHTING_H */

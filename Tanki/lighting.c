@@ -194,27 +194,29 @@ bool is_point_visible(float x, float y, float player_x, float player_y, float pl
 int init_audio(void) {
     // Инициализация SDL аудио
     if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-        fprintf(stderr, "SDL_Init error: %s\n", SDL_GetError());
-        return 0;
+        printf("SDL_Init error: %s\n", SDL_GetError());
+        return 1;
     }
 
-    // Инициализация SDL_mixer
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        fprintf(stderr, "Mix_OpenAudio error: %s\n", Mix_GetError());
+        printf("Mix_OpenAudio error: %s\n", Mix_GetError());
         SDL_Quit();
-        return 0;
+        return 1;
     }
 
-    // Загрузка звукового файла
-    warning_sound = Mix_LoadWAV("alarm.ogg");
-    if (!warning_sound) {
-        fprintf(stderr, "Mix_LoadWAV error: %s\n", Mix_GetError());
+    Mix_Chunk* waring_sound = Mix_LoadWAV("C:\\Users\\maxis\\source\\repos\\Tanki\\x64\\Debug\\alarm.wav");
+    if (!waring_sound) {
+        printf("Mix_LoadWAV error: %s\n", Mix_GetError());
         Mix_CloseAudio();
         SDL_Quit();
-        return 0;
+        return 1;
     }
-
-    return 1;
+    Mix_VolumeChunk(warning_sound, MIX_MAX_VOLUME);
+    int audio_devices = SDL_GetNumAudioDevices(0);
+    //for (int i = 0; i < audio_devices; i++) {
+    //    printf("Аудиоустройство %d: %s\n", i, SDL_GetAudioDeviceName(i, 0));
+    //}
+    return 0;
 }
 // Очистка ресурсов
 void cleanup_audio(void) {
