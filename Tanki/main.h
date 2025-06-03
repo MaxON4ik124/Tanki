@@ -101,4 +101,7 @@ extern float player_color[3];
 extern float bot_colors[BOT_COUNT][3];
 extern float powerup_colors[POWERUP_COUNT][3];
 
+extern Mix_Chunk* warning_sound;
+extern int pulseSoundCooldown; // Задержка между воспроизведением звука в мс
+
 #endif  /*MAIN_H */

@@ -163,6 +163,8 @@
     <Text Include="map_town_pro.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\OneDrive\Рабочий стол\GLFW\SDL2-2.30.8\lib\x64\SDL2.dll" />
+    <None Include="..\..\..\..\OneDrive\Рабочий стол\GLFW\SDL2_mixer-2.8.1\lib\x64\SDL2_mixer.dll" />
     <None Include="alarm.ogg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

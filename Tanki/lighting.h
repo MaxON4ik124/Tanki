@@ -26,8 +26,6 @@ extern int pulse_count;
 extern float pulse_intensity;
 extern VisibilityPoint visibility_polygon[MAX_VISIBILITY_RAYS];
 extern int visibility_point_count;
-extern Mix_Chunk* warning_sound = NULL;
-extern int pulseSoundCooldown = 500; // Задержка между воспроизведением звука в мс
 
 // Функции системы освещения
 void init_lighting(void);

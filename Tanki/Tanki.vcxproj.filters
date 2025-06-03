@@ -96,5 +96,11 @@
     <None Include="alarm.ogg">
       <Filter>Файлы ресурсов</Filter>
     </None>
+    <None Include="..\..\..\..\OneDrive\Рабочий стол\GLFW\SDL2_mixer-2.8.1\lib\x64\SDL2_mixer.dll">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="..\..\..\..\OneDrive\Рабочий стол\GLFW\SDL2-2.30.8\lib\x64\SDL2.dll">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
   </ItemGroup>
 </Project>

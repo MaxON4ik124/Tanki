@@ -1,5 +1,4 @@
 #include "main.h"
-#include "lighting.h"
 
 // Глобальные переменные
 bool darkness_active = false;
@@ -10,7 +9,8 @@ int pulse_count = 0;
 float pulse_intensity = 0.0f;
 VisibilityPoint visibility_polygon[MAX_VISIBILITY_RAYS];
 int visibility_point_count = 0;
-
+Mix_Chunk* warning_sound = NULL;
+int pulseSoundCooldown = 500;
 // Инициализация системы освещения
 void init_lighting(void) {
     darkness_active = false;
