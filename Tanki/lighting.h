@@ -4,7 +4,7 @@
 #include "main.h"
 
 // Константы для системы освещения
-#define FOV_ANGLE 30.0f          // Угол поля зрения в градусах
+#define FOV_ANGLE 60.0f          // Угол поля зрения в градусах
 #define MAX_VISIBILITY_RAYS 360  // Количество лучей для расчета видимости
 #define WARNING_DURATION 180     // 3 секунды предупреждения (60 FPS * 3)
 #define WARNING_PULSES 3         // Количество пульсаций

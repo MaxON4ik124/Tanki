@@ -37,7 +37,7 @@
 #define HEIGHT 1080
 #define TANK_SIZE 40
 #define BULLET_SIZE 8
-#define TANK_SPEED 120.0f
+#define TANK_SPEED 120.0f;
 #define BOT_SPEED 100.0f
 #define BULLET_SPEED 800.0f
 #define MAX_BULLETS 10
@@ -50,6 +50,11 @@
 #define RELOAD_TIME 60
 #define TILE_SIZE (WIDTH / MAP_WIDTH)
 #define M_PI 3.14f
+
+
+#define TRANSITION_DURATION 2.0f
+#define FADE_OUT_TIME 1.0f        
+#define FADE_IN_TIME 1.0f        
 
 #include "types.h"
 #include "map.h"
@@ -78,7 +83,9 @@ extern int powerup_spawn_timer;
 extern int menu_selection;
 extern float animation_time;
 extern float menu_animation;
-
+extern float transition_timer;
+extern int next_level;
+extern bool transition_fade_out;
 // Массив частиц для эффектов
 #define MAX_PARTICLES 1000
 extern Particle particles[MAX_PARTICLES];

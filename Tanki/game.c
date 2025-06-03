@@ -134,7 +134,6 @@ void init_level(int level_num) {
     player.shield_timer = 0;
     player.triple_shot_timer = 0;
     player.invulnerable_timer = 180; // 3 секунды неуязвимости при старте
-
     // Настройка ботов
     int bot_count = level_info[level_num].bot_count;
     for (int i = 0; i < MAX_BOTS; i++) {
@@ -204,7 +203,7 @@ void init_level(int level_num) {
     level = level_num;
     sprintf(game_message, "Уровень %d: %s", level_num, level_info[level_num].name);
     message_timer = 180; // 3 секунды
-    powerup_spawn_timer = 300; // 5 секунд до появления нового усиления
+    powerup_spawn_timer = 1800; // 5 секунд до появления нового усиления
 }
 
 // Обновление перехода между уровнями
@@ -262,13 +261,13 @@ void update_game(float dt) {
         spawn_powerup();
         powerup_spawn_timer = 300 + rand() % 600; // 5-15 секунд до следующего усиления
     }
-
     // Обновление компонентов игры
     update_bots(dt);
     update_bullets(dt);
     update_powerups(dt);
     update_particles(dt);
     check_collisions();
+    update_lighting(dt);
 
     // Проверка победы
     bool all_bots_dead = true;
@@ -280,12 +279,16 @@ void update_game(float dt) {
     }
 
     if (all_bots_dead) {
+        darkness_timer = 0;
+        warning_active = false;
+        darkness_active = false;
         if (level < MAX_LEVEL) {
             // Начинаем переход на следующий уровень
             game_state = GAME_LEVEL_TRANSITION;
             start_level_transition(level + 1);
         }
         else {
+
             game_state = GAME_WIN;
         }
     }

@@ -40,6 +40,8 @@ int main() {
         }
 
         render();
+        render_warning_pulse();
+        render_darkness_overlay();
         glfwSwapBuffers(window);
     }
 

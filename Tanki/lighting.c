@@ -200,14 +200,59 @@ void play_warning_sound(void) {
 }
 
 // Отрисовка затемнения
+
 void render_darkness_overlay(void) {
     if (!darkness_active) return;
 
-    // Рисуем черный фон поверх всего
-    glColor4f(0.0f, 0.0f, 0.0f, 0.95f);
+    // Включаем смешивание цветов
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    // Включаем stencil buffer для создания маски
+    glEnable(GL_STENCIL_TEST);
+
+    // 1. Сначала рисуем черный фон везде, кроме области видимости
+    glStencilMask(0xFF);
+    glClear(GL_STENCIL_BUFFER_BIT);
+
+    // Настраиваем stencil buffer для записи 1 в область видимости
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); // Отключаем запись цвета
+
+    // Рисуем область видимости (будет записана в stencil buffer)
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(player.x, player.y); // Центр - позиция игрока
+    for (int i = 0; i < visibility_point_count; i++) {
+        glVertex2f(visibility_polygon[i].x, visibility_polygon[i].y);
+    }
+    if (visibility_point_count > 0) {
+        glVertex2f(visibility_polygon[0].x, visibility_polygon[0].y); // Замыкаем
+    }
+    glEnd();
+
+    // 1.5 Добавляем круг вокруг игрока (радиус 30 единиц) в stencil buffer как видимую область
+    const float player_light_radius = 60.0f;
+    glStencilFunc(GL_ALWAYS, 1, 0xFF); // Продолжаем записывать 1
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    // Рисуем круг вокруг игрока
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(player.x, player.y); // Центр круга
+    for (int i = 0; i <= 360; i += 10) {
+        float angle = i * M_PI / 180.0f;
+        glVertex2f(player.x + cosf(angle) * player_light_radius,
+            player.y + sinf(angle) * player_light_radius);
+    }
+    glEnd();
+
+    // 2. Теперь рисуем черный фон везде, где в stencil buffer не 1
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); // Включаем запись цвета
+
+    // Черный фон с прозрачностью (затемнение)
+    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
     glBegin(GL_QUADS);
     glVertex2f(0, 0);
     glVertex2f(WIDTH, 0);
@@ -215,57 +260,18 @@ void render_darkness_overlay(void) {
     glVertex2f(0, HEIGHT);
     glEnd();
 
-    // Рисуем освещенную область (вырезаем из затемнения)
-    if (visibility_point_count > 0) {
-        // Используем stencil buffer для создания "дыры" в затемнении
-        glEnable(GL_STENCIL_TEST);
-        glStencilMask(0xFF);
-        glClear(GL_STENCIL_BUFFER_BIT);
+    // 3. Теперь рисуем область видимости без затемнения
+    // Устанавливаем stencil для рисования только в области видимости
+    glStencilFunc(GL_EQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
-        // Записываем в stencil buffer область видимости
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    // Здесь можно ничего не рисовать - область видимости будет отображаться как есть
+    // (она уже была нарисована ранее обычными функциями рендеринга)
 
-        // Рисуем треугольники видимости
-        glBegin(GL_TRIANGLE_FAN);
-        glVertex2f(player.x, player.y); // Центр - позиция игрока
-
-        for (int i = 0; i < visibility_point_count; i++) {
-            glVertex2f(visibility_polygon[i].x, visibility_polygon[i].y);
-        }
-
-        // Замыкаем треугольник
-        if (visibility_point_count > 0) {
-            glVertex2f(visibility_polygon[0].x, visibility_polygon[0].y);
-        }
-        glEnd();
-
-        // Теперь рисуем освещенную область
-        glStencilFunc(GL_EQUAL, 1, 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-        // Рисуем слабое освещение в видимой области
-        glColor4f(0.3f, 0.3f, 0.4f, 0.7f);
-        glBegin(GL_TRIANGLE_FAN);
-        glVertex2f(player.x, player.y);
-
-        for (int i = 0; i < visibility_point_count; i++) {
-            glVertex2f(visibility_polygon[i].x, visibility_polygon[i].y);
-        }
-
-        if (visibility_point_count > 0) {
-            glVertex2f(visibility_polygon[0].x, visibility_polygon[0].y);
-        }
-        glEnd();
-
-        glDisable(GL_STENCIL_TEST);
-    }
-
+    // Отключаем stencil test
+    glDisable(GL_STENCIL_TEST);
     glDisable(GL_BLEND);
 }
-
 // Отрисовка пульсации предупреждения
 void render_warning_pulse(void) {
     if (!warning_active) return;
