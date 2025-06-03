@@ -78,7 +78,7 @@ void spawn_powerup() {
                 powerups[i].y = y;
                 powerups[i].type = rand() % POWERUP_COUNT;
                 powerups[i].active = true;
-                powerups[i].timer = 600; // 10 секунд до исчезновения
+                powerups[i].timer = 1800; // 10 секунд до исчезновения
                 powerups[i].rotation = 0;
                 powerups[i].scale = 1.0f;
                 powerups[i].scaling_up = false;

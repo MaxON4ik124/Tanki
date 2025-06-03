@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="game.c" />
     <ClCompile Include="input.c" />
+    <ClCompile Include="lighting.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="map.c" />
     <ClCompile Include="particles.c" />
@@ -145,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="lighting.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="particles.h" />
