@@ -9,6 +9,8 @@
 #include <time.h>
 #include <string.h>
 #include <GLFW/glfw3.h>
+#include <SDL.h>
+#include <SDL_mixer.h>
 
 // Константы для типов объектов на карте
 #define TILE_EMPTY 0

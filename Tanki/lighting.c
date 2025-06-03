@@ -191,13 +191,55 @@ bool is_point_visible(float x, float y, float player_x, float player_y, float pl
 
     return !blocked || distance >= point_distance;
 }
+int init_audio(void) {
+    // Инициализация SDL аудио
+    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+        fprintf(stderr, "SDL_Init error: %s\n", SDL_GetError());
+        return 0;
+    }
 
+    // Инициализация SDL_mixer
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        fprintf(stderr, "Mix_OpenAudio error: %s\n", Mix_GetError());
+        SDL_Quit();
+        return 0;
+    }
+
+    // Загрузка звукового файла
+    warning_sound = Mix_LoadWAV("alarm.ogg");
+    if (!warning_sound) {
+        fprintf(stderr, "Mix_LoadWAV error: %s\n", Mix_GetError());
+        Mix_CloseAudio();
+        SDL_Quit();
+        return 0;
+    }
+
+    return 1;
+}
+// Очистка ресурсов
+void cleanup_audio(void) {
+    if (warning_sound) {
+        Mix_FreeChunk(warning_sound);
+        warning_sound = NULL;
+    }
+    Mix_CloseAudio();
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+}
 // Воспроизведение звука предупреждения (заглушка)
 void play_warning_sound(void) {
-    // Здесь должен быть код для воспроизведения .ogg файла
-    // Можно использовать библиотеки типа OpenAL или SDL_mixer
-    printf("ВНИМАНИЕ: Через 3 секунды будет отключено освещение!\n");
+    if (!warning_sound) {
+        fprintf(stderr, "Warning sound not loaded!\n");
+        return;
+    }
+
+    // Проигрываем звук на первом свободном канале (без повторов)
+    if (Mix_PlayChannel(-1, warning_sound, 0) == -1) {
+        fprintf(stderr, "Mix_PlayChannel error: %s\n", Mix_GetError());
+    }
+    SDL_Delay(pulseSoundCooldown);
+    cleanup_audio();
 }
+
 
 // Отрисовка затемнения
 
