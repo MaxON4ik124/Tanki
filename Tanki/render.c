@@ -389,17 +389,7 @@ void draw_pause_menu() {
 
 // Функция рендеринга
 void draw_game_over() {
-    // Затемнение экрана
-    /*glColor4f(0.0f, 0.0f, 0.0f, 0.1f);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glBegin(GL_QUADS);
-    glVertex2f(0, 0);
-    glVertex2f(WIDTH, 0);
-    glVertex2f(WIDTH, HEIGHT);
-    glVertex2f(0, HEIGHT);
-    glEnd();*/
     glBegin(GL_QUADS);
     glColor3f(0.2f, 0.0f, 0.0f);
     glVertex2f(0, 0);

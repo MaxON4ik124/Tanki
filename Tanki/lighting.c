@@ -9,8 +9,6 @@ int pulse_count = 0;
 float pulse_intensity = 0.0f;
 VisibilityPoint visibility_polygon[MAX_VISIBILITY_RAYS];
 int visibility_point_count = 0;
-Mix_Chunk* warning_sound = NULL;
-int pulseSoundCooldown = 500;
 // Инициализация системы освещения
 void init_lighting(void) {
     darkness_active = false;
@@ -245,7 +243,7 @@ void render_darkness_overlay(void) {
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); // Включаем запись цвета
 
     // Черный фон с прозрачностью (затемнение) - ТОЛЬКО до области интерфейса
-    glColor4f(0.0f, 0.0f, 0.0f, 0.6f);
+    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
     glBegin(GL_QUADS);
     glVertex2f(0, 40);  // Начинаем ниже панели интерфейса
     glVertex2f(WIDTH, 40);

@@ -11,8 +11,7 @@
 #include <time.h>
 #include <string.h>
 #include <GLFW/glfw3.h>
-#include <SDL.h>
-#include <SDL_mixer.h>
+
 
 // Константы для типов объектов на карте
 #define TILE_EMPTY 0
@@ -41,7 +40,7 @@
 #define HEIGHT 1080
 #define TANK_SIZE 40
 #define BULLET_SIZE 8
-#define TANK_SPEED 420.0f;
+#define TANK_SPEED 120.0f;
 #define BOT_SPEED 100.0f
 #define BULLET_SPEED 800.0f
 #define MAX_BULLETS 10
@@ -57,8 +56,8 @@
 
 
 #define TRANSITION_DURATION 5.0f
-#define FADE_OUT_TIME 4.0f        
-#define FADE_IN_TIME 4.0f        
+#define FADE_OUT_TIME 3.0f        
+#define FADE_IN_TIME 3.0f        
 
 #include "types.h"
 #include "map.h"
@@ -102,8 +101,5 @@ extern LevelInfo level_info[MAX_LEVEL + 1];
 extern float player_color[3];
 extern float bot_colors[BOT_COUNT][3];
 extern float powerup_colors[POWERUP_COUNT][3];
-
-extern Mix_Chunk* warning_sound;
-extern int pulseSoundCooldown; // Задержка между воспроизведением звука в мс
 
 #endif  /*MAIN_H */
