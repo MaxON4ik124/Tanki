@@ -74,7 +74,7 @@
     <ClInclude Include="lighting.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Downloads\stb_easy_font.h">
+    <ClInclude Include="stb_easy_font.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,7 +10,7 @@ double last_time = 0;
 double delta_time = 0;
 GameState game_state = GAME_MENU;
 int level = 1;
-int max_level = 3;
+int max_level = 5;
 char game_message[100] = "";
 int message_timer = 0;
 int powerup_spawn_timer = 0;
@@ -26,11 +26,11 @@ bool transition_fade_out = true;
 // Информация о уровне
 LevelInfo level_info[MAX_LEVEL + 1] = {
     {"", "", 0, 0}, // Нулевой индекс не используется
-    {"Стартовый уровень", "Тренировочная локация", 1, 1},
-    {"Обычный уровень", "Стандартная карта с средним количеством укрытий", 1, 1},
-    {"Обычный уровень (Дополнение)", "Карта как и на прошлом уровне, но врагов 2", 2, 1},
-    {"Лабиринт", "Карта с множеством поворотов и узкими проходами", 2, 1},
-    {"Арена", "Открытая арена с минимумом укрытий", 3, 1},
+    {"Start level", "Training location", 1, 1},
+    {"Classic level", "Standard map with middle amount of hideouts", 1, 1},
+    {"Buffed level", "Map from past level with 2 enemies and powerups", 2, 1},
+    {"Maze level", "Map with lot turns and narrow halls, 2 enemies", 2, 1},
+    {"Arena level", "Open map with a few hideouts, 3 enemies, last", 3, 1},
 };
 
 // Цвета для различных типов танков и объектов
@@ -133,6 +133,7 @@ void init_level(int level_num) {
     player.rapid_fire_timer = 0;
     player.shield_timer = 0;
     player.triple_shot_timer = 0;
+    player.speed_timer = 0;
     player.invulnerable_timer = 180; // 3 секунды неуязвимости при старте
     // Настройка ботов
     int bot_count = level_info[level_num].bot_count;
@@ -201,7 +202,7 @@ void init_level(int level_num) {
     }
 
     level = level_num;
-    sprintf(game_message, "Уровень %d: %s", level_num, level_info[level_num].name);
+    sprintf(game_message, "Level %d: %s", level_num, level_info[level_num].name);
     message_timer = 180; // 3 секунды
     powerup_spawn_timer = 1800; // 5 секунд до появления нового усиления
 }
@@ -236,11 +237,13 @@ void update_game(float dt) {
     if (player.rapid_fire_timer > 0) player.rapid_fire_timer--;
     if (player.shield_timer > 0) player.shield_timer--;
     if (player.triple_shot_timer > 0) player.triple_shot_timer--;
+    if (player.speed_timer > 0) player.speed_timer--;
     if (player.invulnerable_timer > 0) player.invulnerable_timer--;
     if (message_timer > 0) message_timer--;
     if (powerup_spawn_timer > 0) powerup_spawn_timer--;
-
     // Временные эффекты на скорость
+    if (player.speed_timer > 0) player.base_speed = 5.0f * TANK_SIZE;
+    else player.speed = 3.0f * TANK_SIZE;
     player.speed = player.base_speed;
 
     // Проверяем, стоит ли игрок на льду
@@ -295,6 +298,9 @@ void update_game(float dt) {
 
     // Проверка поражения
     if (!player.active && player.respawn_timer <= 0) {
+        darkness_timer = 0;
+        warning_active = false;
+        darkness_active = false;
         game_state = GAME_OVER;
     }
 }

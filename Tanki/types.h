@@ -50,6 +50,7 @@ typedef struct {
     int invulnerable_timer;
     int shield_timer;
     int triple_shot_timer;
+    int speed_timer;
     BotType type;
 
     // ÈÈ ןאנאלוענû

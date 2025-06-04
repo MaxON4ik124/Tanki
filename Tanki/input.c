@@ -137,14 +137,15 @@ void process_input(GLFWwindow* window) {
         // Обработка выбора в меню
         if (keys[GLFW_KEY_UP] && !keys[GLFW_KEY_UP + 1000]) {
             keys[GLFW_KEY_UP + 1000] = true; // Флаг для предотвращения повторного срабатывания
-            menu_selection = (menu_selection + 2) % 3;
+            if (menu_selection == 0) menu_selection = 2;
+            else menu_selection--;
         }
 
         if (keys[GLFW_KEY_DOWN] && !keys[GLFW_KEY_DOWN + 1000]) {
             keys[GLFW_KEY_DOWN + 1000] = true;
-            menu_selection = (menu_selection + 1) % 3;
+            if (menu_selection == 2) menu_selection = 0;
+            else menu_selection++;
         }
-
         if (keys[GLFW_KEY_ENTER] && !keys[GLFW_KEY_ENTER + 1000]) {
             keys[GLFW_KEY_ENTER + 1000] = true;
 
@@ -243,4 +244,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_ENTER && action == GLFW_PRESS) {
         keys[GLFW_KEY_ENTER] = true;
     }
+    if (key == GLFW_KEY_UP && action == GLFW_RELEASE) {
+        keys[GLFW_KEY_UP] = false;
+    }
+    if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE) {
+        keys[GLFW_KEY_DOWN] = false;
+    }
+    if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE) {
+        keys[GLFW_KEY_ENTER] = false;
+    }
+
 }

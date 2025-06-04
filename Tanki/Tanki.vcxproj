@@ -144,7 +144,6 @@
     <ClCompile Include="tank.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\stb_easy_font.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="lighting.h" />
@@ -153,6 +152,7 @@
     <ClInclude Include="particles.h" />
     <ClInclude Include="powerup.h" />
     <ClInclude Include="render.h" />
+    <ClInclude Include="stb_easy_font.h" />
     <ClInclude Include="tank.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>

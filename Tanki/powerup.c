@@ -107,13 +107,14 @@ void apply_powerup(PowerupType type) {
     case POWERUP_HEALTH:
         // Восстановление здоровья
         player.health = fmin(player.max_health, player.health + 50);
-        strcpy(game_message, "Получено лечение!");
+        //strcpy(game_message, "Получено лечение!");
         break;
 
     case POWERUP_SPEED:
         // Увеличение скорости
-        player.base_speed = TANK_SIZE * 5.0f;
-        strcpy(game_message, "Скорость увеличена!");
+        player.speed_timer = 300;
+        //player.base_speed = TANK_SIZE * 5.0f;
+        //strcpy(game_message, "Скорость увеличена!");
         // Эффект скорости длится 10 секунд, затем сбрасывается
         for (int i = 0; i < MAX_BULLETS * (MAX_BOTS + 1); i++) {
             if (!bullets[i].active) {
@@ -133,19 +134,19 @@ void apply_powerup(PowerupType type) {
     case POWERUP_RAPID_FIRE:
         // Ускоренная стрельба
         player.rapid_fire_timer = 300; // 5 секунд
-        strcpy(game_message, "Скорострельность повышена!");
+        //strcpy(game_message, "Скорострельность повышена!");
         break;
 
     case POWERUP_SHIELD:
         // Щит
         player.shield_timer = 300; // 5 секунд
-        strcpy(game_message, "Щит активирован!");
+        //strcpy(game_message, "Щит активирован!");
         break;
 
     case POWERUP_TRIPLE_SHOT:
         // Тройной выстрел
         player.triple_shot_timer = 300; // 5 секунд
-        strcpy(game_message, "Тройной выстрел активирован!");
+        //strcpy(game_message, "Тройной выстрел активирован!");
         break;
     }
 

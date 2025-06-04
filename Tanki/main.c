@@ -39,7 +39,7 @@ int main() {
             update_level_transition(delta_time);
         }
 
-        init_audio();
+        //init_audio();
         render();
         render_warning_pulse();
         render_darkness_overlay();

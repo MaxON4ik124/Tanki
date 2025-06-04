@@ -37,7 +37,7 @@ void update_lighting(float dt) {
         warning_active = true;
         warning_timer = 0;
         pulse_count = 0;
-        play_warning_sound();
+        //play_warning_sound();
     }
 
     // Обновление предупреждения
@@ -191,57 +191,6 @@ bool is_point_visible(float x, float y, float player_x, float player_y, float pl
 
     return !blocked || distance >= point_distance;
 }
-//int init_audio(void) {
-//    // Инициализация SDL аудио
-//    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-//        printf("SDL_Init error: %s\n", SDL_GetError());
-//        return 1;
-//    }
-//
-//    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-//        printf("Mix_OpenAudio error: %s\n", Mix_GetError());
-//        SDL_Quit();
-//        return 1;
-//    }
-//
-//    Mix_Chunk* waring_sound = Mix_LoadWAV("C:\\Users\\maxis\\source\\repos\\Tanki\\x64\\Debug\\alarm.wav");
-//    if (!waring_sound) {
-//        printf("Mix_LoadWAV error: %s\n", Mix_GetError());
-//        Mix_CloseAudio();
-//        SDL_Quit();
-//        return 1;
-//    }
-//    Mix_VolumeChunk(warning_sound, MIX_MAX_VOLUME);
-//    int audio_devices = SDL_GetNumAudioDevices(0);
-//    //for (int i = 0; i < audio_devices; i++) {
-//    //    printf("Аудиоустройство %d: %s\n", i, SDL_GetAudioDeviceName(i, 0));
-//    //}
-//    return 0;
-//}
-//// Очистка ресурсов
-//void cleanup_audio(void) {
-//    if (warning_sound) {
-//        Mix_FreeChunk(warning_sound);
-//        warning_sound = NULL;
-//    }
-//    Mix_CloseAudio();
-//    SDL_QuitSubSystem(SDL_INIT_AUDIO);
-//}
-//// Воспроизведение звука предупреждения (заглушка)
-//void play_warning_sound(void) {
-//    if (!warning_sound) {
-//        fprintf(stderr, "Warning sound not loaded!\n");
-//        return;
-//    }
-//
-//    // Проигрываем звук на первом свободном канале (без повторов)
-//    if (Mix_PlayChannel(-1, warning_sound, 0) == -1) {
-//        fprintf(stderr, "Mix_PlayChannel error: %s\n", Mix_GetError());
-//    }
-//    SDL_Delay(pulseSoundCooldown);
-//    cleanup_audio();
-//}
-
 
 // Отрисовка затемнения
 
@@ -275,7 +224,7 @@ void render_darkness_overlay(void) {
     }
     glEnd();
 
-    // 1.5 Добавляем круг вокруг игрока (радиус 30 единиц) в stencil buffer как видимую область
+    // 1.5 Добавляем круг вокруг игрока (радиус 60 единиц) в stencil buffer как видимую область
     const float player_light_radius = 60.0f;
     glStencilFunc(GL_ALWAYS, 1, 0xFF); // Продолжаем записывать 1
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -295,22 +244,14 @@ void render_darkness_overlay(void) {
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); // Включаем запись цвета
 
-    // Черный фон с прозрачностью (затемнение)
-    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+    // Черный фон с прозрачностью (затемнение) - ТОЛЬКО до области интерфейса
+    glColor4f(0.0f, 0.0f, 0.0f, 0.6f);
     glBegin(GL_QUADS);
-    glVertex2f(0, 0);
-    glVertex2f(WIDTH, 0);
+    glVertex2f(0, 40);  // Начинаем ниже панели интерфейса
+    glVertex2f(WIDTH, 40);
     glVertex2f(WIDTH, HEIGHT);
     glVertex2f(0, HEIGHT);
     glEnd();
-
-    // 3. Теперь рисуем область видимости без затемнения
-    // Устанавливаем stencil для рисования только в области видимости
-    glStencilFunc(GL_EQUAL, 1, 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-
-    // Здесь можно ничего не рисовать - область видимости будет отображаться как есть
-    // (она уже была нарисована ранее обычными функциями рендеринга)
 
     // Отключаем stencil test
     glDisable(GL_STENCIL_TEST);
