@@ -214,21 +214,21 @@ void draw_ui() {
 
     if (player.shield_timer > 0) {
         glColor3f(0.0f, 0.6f, 1.0f);
-        draw_text("Shield", powerup_x, 10, 4.0f, 0.0f, 0.6f, 1.0f);
+        draw_text("Shield", powerup_x, 2, 4.0f, 0.0f, 0.6f, 1.0f);
         powerup_x += 50;
     }
 
     if (player.rapid_fire_timer > 0) {
-        draw_text("Rapidety", powerup_x, 10, 4.0f, 1.0f, 0.8f, 0.0f);
+        draw_text("Rapidety", powerup_x, 2, 4.0f, 1.0f, 0.8f, 0.0f);
         powerup_x += 50;
     }
 
     if (player.triple_shot_timer > 0) {
-        draw_text("Multiple shot", powerup_x, 10, 4.0f, 1.0f, 0.4f, 0.8f);
+        draw_text("Multiple shot", powerup_x, 2, 4.0f, 1.0f, 0.4f, 0.8f);
         powerup_x += 50;
     }
     if (player.speed_timer > 0) {
-        draw_text("Speed", powerup_x, 10, 4.0f, 0.0f, 1.0f, 0.0f);
+        draw_text("Speed", powerup_x, 2, 4.0f, 0.0f, 1.0f, 0.0f);
         powerup_x += 50;
     }
 

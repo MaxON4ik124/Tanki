@@ -243,7 +243,7 @@ void render_darkness_overlay(void) {
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); // Включаем запись цвета
 
     // Черный фон с прозрачностью (затемнение) - ТОЛЬКО до области интерфейса
-    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+    glColor4f(0.0f, 0.0f, 0.0f, 0.95f);
     glBegin(GL_QUADS);
     glVertex2f(0, 40);  // Начинаем ниже панели интерфейса
     glVertex2f(WIDTH, 40);
