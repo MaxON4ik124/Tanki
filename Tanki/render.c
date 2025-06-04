@@ -2,9 +2,35 @@
 
 // Простая функция для рендера текста (упрощенная)
 void draw_text(const char* text, float x, float y, float scale, float r, float g, float b) {
-    // В реальной игре здесь был бы код для рендера текста с использованием текстур или растровых шрифтов
-    // Поскольку это упрощенная версия, мы просто выводим сообщение в консоль
-    // printf("Text: %s at (%.2f, %.2f)\n", text, x, y);
+    if (!text || strlen(text) == 0) return;
+
+    // Буфер для вершин (каждый символ может занимать до 270 байт)
+    static char buffer[99999];
+    int num_quads = stb_easy_font_print(x, y, (char*)text, NULL, buffer, sizeof(buffer));
+
+    if (num_quads > 0) {
+        // Сохраняем текущее состояние OpenGL
+        glPushMatrix();
+
+        // Применяем масштаб
+        glScalef(scale, scale, 1.0f);
+
+        // Устанавливаем цвет
+        glColor3f(r, g, b);
+
+        // Включаем массивы вершин
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_FLOAT, 16, buffer);
+
+        // Рисуем текст
+        glDrawArrays(GL_QUADS, 0, num_quads * 4);
+
+        // Отключаем массивы вершин
+        glDisableClientState(GL_VERTEX_ARRAY);
+
+        // Восстанавливаем матрицу
+        glPopMatrix();
+    }
 }
 
 // Отрисовка карты

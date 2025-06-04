@@ -32,9 +32,9 @@ void init_lighting(void);
 void update_lighting(float dt);
 void calculate_visibility(float player_x, float player_y, float player_angle);
 bool is_point_visible(float x, float y, float player_x, float player_y, float player_angle);
-void play_warning_sound(void);
+//void play_warning_sound(void);
 void render_darkness_overlay(void);
 void render_warning_pulse(void);
-int init_audio(void);
-void cleanup_audio(void);
+//int init_audio(void);
+//void cleanup_audio(void);
 #endif /* LIGHTING_H */

@@ -74,6 +74,9 @@
     <ClInclude Include="lighting.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Downloads\stb_easy_font.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="map_arena.txt">

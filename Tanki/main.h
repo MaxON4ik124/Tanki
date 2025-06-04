@@ -2,6 +2,8 @@
 #define MAIN_H
 
 #define _CRT_SECURE_NO_WARNINGS
+#define STB_EASY_FONT_IMPLEMENTATION
+#include "stb_easy_font.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>

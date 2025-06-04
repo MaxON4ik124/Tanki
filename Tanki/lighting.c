@@ -191,56 +191,56 @@ bool is_point_visible(float x, float y, float player_x, float player_y, float pl
 
     return !blocked || distance >= point_distance;
 }
-int init_audio(void) {
-    // Инициализация SDL аудио
-    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-        printf("SDL_Init error: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        printf("Mix_OpenAudio error: %s\n", Mix_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    Mix_Chunk* waring_sound = Mix_LoadWAV("C:\\Users\\maxis\\source\\repos\\Tanki\\x64\\Debug\\alarm.wav");
-    if (!waring_sound) {
-        printf("Mix_LoadWAV error: %s\n", Mix_GetError());
-        Mix_CloseAudio();
-        SDL_Quit();
-        return 1;
-    }
-    Mix_VolumeChunk(warning_sound, MIX_MAX_VOLUME);
-    int audio_devices = SDL_GetNumAudioDevices(0);
-    //for (int i = 0; i < audio_devices; i++) {
-    //    printf("Аудиоустройство %d: %s\n", i, SDL_GetAudioDeviceName(i, 0));
-    //}
-    return 0;
-}
-// Очистка ресурсов
-void cleanup_audio(void) {
-    if (warning_sound) {
-        Mix_FreeChunk(warning_sound);
-        warning_sound = NULL;
-    }
-    Mix_CloseAudio();
-    SDL_QuitSubSystem(SDL_INIT_AUDIO);
-}
-// Воспроизведение звука предупреждения (заглушка)
-void play_warning_sound(void) {
-    if (!warning_sound) {
-        fprintf(stderr, "Warning sound not loaded!\n");
-        return;
-    }
-
-    // Проигрываем звук на первом свободном канале (без повторов)
-    if (Mix_PlayChannel(-1, warning_sound, 0) == -1) {
-        fprintf(stderr, "Mix_PlayChannel error: %s\n", Mix_GetError());
-    }
-    SDL_Delay(pulseSoundCooldown);
-    cleanup_audio();
-}
+//int init_audio(void) {
+//    // Инициализация SDL аудио
+//    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+//        printf("SDL_Init error: %s\n", SDL_GetError());
+//        return 1;
+//    }
+//
+//    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+//        printf("Mix_OpenAudio error: %s\n", Mix_GetError());
+//        SDL_Quit();
+//        return 1;
+//    }
+//
+//    Mix_Chunk* waring_sound = Mix_LoadWAV("C:\\Users\\maxis\\source\\repos\\Tanki\\x64\\Debug\\alarm.wav");
+//    if (!waring_sound) {
+//        printf("Mix_LoadWAV error: %s\n", Mix_GetError());
+//        Mix_CloseAudio();
+//        SDL_Quit();
+//        return 1;
+//    }
+//    Mix_VolumeChunk(warning_sound, MIX_MAX_VOLUME);
+//    int audio_devices = SDL_GetNumAudioDevices(0);
+//    //for (int i = 0; i < audio_devices; i++) {
+//    //    printf("Аудиоустройство %d: %s\n", i, SDL_GetAudioDeviceName(i, 0));
+//    //}
+//    return 0;
+//}
+//// Очистка ресурсов
+//void cleanup_audio(void) {
+//    if (warning_sound) {
+//        Mix_FreeChunk(warning_sound);
+//        warning_sound = NULL;
+//    }
+//    Mix_CloseAudio();
+//    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+//}
+//// Воспроизведение звука предупреждения (заглушка)
+//void play_warning_sound(void) {
+//    if (!warning_sound) {
+//        fprintf(stderr, "Warning sound not loaded!\n");
+//        return;
+//    }
+//
+//    // Проигрываем звук на первом свободном канале (без повторов)
+//    if (Mix_PlayChannel(-1, warning_sound, 0) == -1) {
+//        fprintf(stderr, "Mix_PlayChannel error: %s\n", Mix_GetError());
+//    }
+//    SDL_Delay(pulseSoundCooldown);
+//    cleanup_audio();
+//}
 
 
 // Отрисовка затемнения
