@@ -35,7 +35,6 @@ void update_lighting(float dt) {
         warning_active = true;
         warning_timer = 0;
         pulse_count = 0;
-        //play_warning_sound();
     }
 
     // Обновление предупреждения
@@ -78,7 +77,7 @@ bool ray_intersects_wall(float x1, float y1, float x2, float y2, float* hit_x, f
     dx /= length;
     dy /= length;
 
-    float step = TILE_SIZE / 4.0f; // Шаг для проверки
+    float step = TILE_SIZE / 45.0f; // Шаг для проверки
     float current_x = x1;
     float current_y = y1;
     float traveled = 0;
@@ -127,7 +126,7 @@ void calculate_visibility(float player_x, float player_y, float player_angle) {
     while (end_angle >= 360.0f) end_angle -= 360.0f;
 
     // Определяем количество лучей в пределах FOV
-    int rays_in_fov = (int)(FOV_ANGLE * 2); // 2 луча на градус для плавности
+    int rays_in_fov = (int)(FOV_ANGLE * 5); // 2 луча на градус для плавности
 
     for (int i = 0; i <= rays_in_fov; i++) {
         float angle = start_angle + (FOV_ANGLE * i / (float)rays_in_fov);

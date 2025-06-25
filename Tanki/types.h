@@ -1,7 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 #include "main.h"
-// Типы усилений (powerups)
+
 typedef enum {
     POWERUP_HEALTH,
     POWERUP_SPEED,
@@ -11,7 +11,7 @@ typedef enum {
     POWERUP_COUNT
 } PowerupType;
 
-// Состояния игры
+
 typedef enum {
     GAME_MENU,
     GAME_PLAYING,
@@ -21,7 +21,6 @@ typedef enum {
     GAME_LEVEL_TRANSITION
 } GameState;
 
-// Типы ботов
 typedef enum {
     BOT_REGULAR,
     BOT_FAST,
@@ -30,13 +29,12 @@ typedef enum {
     BOT_COUNT
 } BotType;
 
-// Структура объекта танка
 typedef struct {
     float x, y;
-    float angle;          // Угол поворота башни (для стрельбы)
-    float movement_angle; // Угол поворота корпуса (для движения)
-    float target_angle;   // Целевой угол поворота башни (для плавного вращения)
-    float rotation_speed; // Скорость вращения башни
+    float angle;          
+    float movement_angle; 
+    float target_angle;   
+    float rotation_speed; 
     int health;
     int max_health;
     bool shooting;
@@ -53,7 +51,7 @@ typedef struct {
     int speed_timer;
     BotType type;
 
-    // ИИ параметры
+    
     float target_x, target_y;
     float ai_timer;
     float ai_state_timer;
@@ -61,7 +59,7 @@ typedef struct {
     bool ai_has_target;
 } Tank;
 
-// Структура объекта снаряда
+
 typedef struct {
     float x, y;
     float dx, dy;
@@ -71,7 +69,6 @@ typedef struct {
     float life_time;
 } Bullet;
 
-// Структура объекта усиления
 typedef struct {
     float x, y;
     PowerupType type;
@@ -82,14 +79,13 @@ typedef struct {
     bool scaling_up;
 } Powerup;
 
-// Структура для безопасного создания объектов
+
 typedef struct {
     int x, y;
     float distance;
     bool valid;
 } SpawnPoint;
 
-// Структура для частиц эффектов
 typedef struct {
     float x, y;
     float dx, dy;
@@ -100,7 +96,7 @@ typedef struct {
     bool active;
 } Particle;
 
-// Информация о уровне
+
 typedef struct {
     char name[50];
     char description[100];
@@ -108,4 +104,4 @@ typedef struct {
     int difficulty;
 } LevelInfo;
 
-#endif /*TYPES_H */
+#endif

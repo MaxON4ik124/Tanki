@@ -1,13 +1,11 @@
 #include "main.h"
 
-// Обработка ввода пользователя
 void process_input(GLFWwindow* window) {
     if (game_state == GAME_PLAYING) {
         float speed = player.speed * delta_time;
         float dx = 0.0f, dy = 0.0f;
         bool movement_input = false;
 
-        // Обработка движения по всем четырем направлениям независимо
         if (keys[GLFW_KEY_W]) {
             dy -= speed;
             movement_input = true;
@@ -25,19 +23,15 @@ void process_input(GLFWwindow* window) {
             movement_input = true;
         }
 
-        // Если игрок двигается, обновляем направление корпуса танка
         if (dx != 0.0f || dy != 0.0f) {
-            // Расчет угла поворота корпуса на основе направления движения
             player.movement_angle = atan2f(dy, dx) * 180.0f / M_PI;
 
-            // Нормализация диагонального движения (для сохранения постоянной скорости)
             if (dx != 0.0f && dy != 0.0f) {
                 float length = sqrtf(dx * dx + dy * dy);
                 dx = dx / length * speed;
                 dy = dy / length * speed;
             }
 
-            // Проверка столкновений и перемещение по осям X и Y отдельно
             float new_x = player.x + dx;
             float new_y = player.y + dy;
 
@@ -49,8 +43,6 @@ void process_input(GLFWwindow* window) {
             }
         }
 
-        // Поворот башни с помощью стрелок (или у нас может быть поворот в сторону мыши)
-        // В этом примере башня вращается с использованием стрелок
         if (keys[GLFW_KEY_Q]) {
             player.target_angle -= player.rotation_speed * delta_time;
         }
@@ -58,13 +50,10 @@ void process_input(GLFWwindow* window) {
             player.target_angle += player.rotation_speed * delta_time;
         }
 
-        // Плавный поворот башни к целевому углу
         float angle_diff = player.target_angle - player.angle;
-        // Нормализация разности углов
         while (angle_diff > 180.0f) angle_diff -= 360.0f;
         while (angle_diff < -180.0f) angle_diff += 360.0f;
 
-        // Плавное вращение башни
         if (fabsf(angle_diff) > 0.1f) {
             float rotation_amount = player.rotation_speed * delta_time;
             if (fabsf(angle_diff) < rotation_amount) {
@@ -77,12 +66,10 @@ void process_input(GLFWwindow* window) {
                 player.angle -= rotation_amount;
             }
 
-            // Нормализация угла до диапазона [0, 360)
             while (player.angle >= 360.0f) player.angle -= 360.0f;
             while (player.angle < 0.0f) player.angle += 360.0f;
         }
 
-        // Стрельба
         if (keys[GLFW_KEY_SPACE] && player.cooldown <= 0) {
             player.shooting = true;
 
@@ -134,9 +121,8 @@ void process_input(GLFWwindow* window) {
         }
     }
     else if (game_state == GAME_MENU) {
-        // Обработка выбора в меню
         if (keys[GLFW_KEY_UP] && !keys[GLFW_KEY_UP + 1000]) {
-            keys[GLFW_KEY_UP + 1000] = true; // Флаг для предотвращения повторного срабатывания
+            keys[GLFW_KEY_UP + 1000] = true;
             if (menu_selection == 0) menu_selection = 2;
             else menu_selection--;
         }
@@ -150,14 +136,14 @@ void process_input(GLFWwindow* window) {
             keys[GLFW_KEY_ENTER + 1000] = true;
 
             switch (menu_selection) {
-            case 0: // Новая игра
+            case 0:
                 init_level(level);
                 game_state = GAME_PLAYING;
                 break;
-            case 1: // Выбор уровня
+            case 1:
                 level = (level % MAX_LEVEL) + 1;
                 break;
-            case 2: // Выход
+            case 2:
                 glfwSetWindowShouldClose(glfwGetCurrentContext(), GLFW_TRUE);
                 break;
             }
@@ -171,6 +157,9 @@ void process_input(GLFWwindow* window) {
 
         if (keys[GLFW_KEY_ESCAPE] && !keys[GLFW_KEY_ESCAPE + 1000]) {
             keys[GLFW_KEY_ESCAPE + 1000] = true;
+            darkness_timer = 0;
+            warning_active = false;
+            darkness_active = false;
             game_state = GAME_MENU;
         }
     }
@@ -181,7 +170,6 @@ void process_input(GLFWwindow* window) {
         }
     }
 
-    // Обновление флагов для предотвращения повторного срабатывания
     if (!keys[GLFW_KEY_UP]) keys[GLFW_KEY_UP + 1000] = false;
     if (!keys[GLFW_KEY_DOWN]) keys[GLFW_KEY_DOWN + 1000] = false;
     if (!keys[GLFW_KEY_ENTER]) keys[GLFW_KEY_ENTER + 1000] = false;
@@ -189,9 +177,7 @@ void process_input(GLFWwindow* window) {
     if (!keys[GLFW_KEY_ESCAPE]) keys[GLFW_KEY_ESCAPE + 1000] = false;
 }
 
-// Обработчик клавиатуры
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    // Обработка клавиш движения
     if (key == GLFW_KEY_W) {
         keys[GLFW_KEY_W] = (action != GLFW_RELEASE);
     }
@@ -210,12 +196,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_E) {
         keys[GLFW_KEY_E] = (action != GLFW_RELEASE);
     }
-    // Обработка клавиши стрельбы
     if (key == GLFW_KEY_SPACE) {
         keys[GLFW_KEY_SPACE] = (action != GLFW_RELEASE);
     }
 
-    // Обработка клавиши паузы
     if (key == GLFW_KEY_P && action == GLFW_PRESS) {
         keys[GLFW_KEY_P] = true;
         if (game_state == GAME_PLAYING) {
@@ -226,7 +210,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
     }
 
-    // Обработка клавиши Escape для выхода в меню
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         keys[GLFW_KEY_ESCAPE] = true;
         if (game_state == GAME_PLAYING || game_state == GAME_PAUSED) {
@@ -234,7 +217,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
     }
 
-    // Обработка клавиш навигации в меню
     if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
         keys[GLFW_KEY_UP] = true;
     }
@@ -253,5 +235,4 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE) {
         keys[GLFW_KEY_ENTER] = false;
     }
-
 }

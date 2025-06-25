@@ -1,6 +1,6 @@
 #include "main.h"
 
-// Основная функция
+
 int main() {
     if (!glfwInit()) {
         fprintf(stderr, "Ошибка инициализации GLFW\n");
@@ -16,13 +16,13 @@ int main() {
 
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-    glfwSwapInterval(1); // Включаем вертикальную синхронизацию
+    glfwSwapInterval(1);
 
-    // Инициализация игры
+    
     srand((unsigned int)time(NULL));
     init_game();
 
-    // Основной игровой цикл
+    
     while (!glfwWindowShouldClose(window)) {
         double current_time = glfwGetTime();
         delta_time = current_time - last_time;
@@ -39,12 +39,12 @@ int main() {
             update_level_transition(delta_time);
         }
 
-        //init_audio();
+      
         render();
         render_warning_pulse();
         render_darkness_overlay();
         glfwSwapBuffers(window);
-    }
+    
 
     glfwTerminate();
     return 0;

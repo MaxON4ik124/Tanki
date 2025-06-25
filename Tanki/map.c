@@ -1,12 +1,12 @@
 #include "main.h"
 
-// Карта с препятствиями
+
 int map[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 
-// Текстурная карта для визуальных вариаций
+
 int texture_map[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 
-// Generation map from file
+
 void generate_map(char* filename)
 {
     memset(map, TILE_EMPTY, sizeof(map));
@@ -27,11 +27,11 @@ void generate_map(char* filename)
     fclose(mapfile);
 }
 
-// Проверка столкновения танка с картой
+
 bool check_map_collision(float x, float y, float radius) {
     int tile_size = TILE_SIZE;
 
-    // Проверяем ближайшие тайлы
+    
     int start_x = (int)((x - radius) / tile_size);
     int end_x = (int)((x + radius) / tile_size);
     int start_y = (int)((y - radius) / tile_size);
@@ -41,7 +41,6 @@ bool check_map_collision(float x, float y, float radius) {
         for (int tx = start_x; tx <= end_x; tx++) {
             if (tx >= 0 && tx < MAP_WIDTH && ty >= 0 && ty < MAP_HEIGHT) {
                 if (map[ty][tx] == TILE_WALL || map[ty][tx] == TILE_BREAKABLE) {
-                    // Проверяем ближайшую точку на тайле
                     float tile_center_x = tx * tile_size + tile_size / 2;
                     float tile_center_y = ty * tile_size + tile_size / 2;
 
@@ -63,7 +62,6 @@ bool check_map_collision(float x, float y, float radius) {
     return false;
 }
 
-// Поиск свободной точки для появления
 void find_spawn_point(float* x_pos, float* y_pos, int tankType) {
     for (int y = 1;y < MAP_HEIGHT - 1;y++)
     {

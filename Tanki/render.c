@@ -247,6 +247,9 @@ void draw_ui() {
 
 // Отрисовка меню
 void draw_menu() {
+    darkness_timer = 0;
+    warning_active = false;
+    darkness_active = false;
     // Градиентный фон
     glBegin(GL_QUADS);
     glColor3f(0.1f, 0.1f, 0.3f);
@@ -362,6 +365,7 @@ void draw_win_screen() {
 
 // Отрисовка экрана паузы
 void draw_pause_menu() {
+
     // Полупрозрачный фон
     glColor4f(0.0f, 0.0f, 0.0f, 0.6f);
     glEnable(GL_BLEND);
@@ -513,7 +517,7 @@ void render() {
         draw_particles();
 
         // Затемнение и предупреждение
-        render_darkness_overlay();
+        //render_darkness_overlay();
         render_warning_pulse();
 
         // Рисуем интерфейс

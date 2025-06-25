@@ -1,18 +1,18 @@
 #include "main.h"
 
-// Массив частиц для эффектов
+
 Particle particles[MAX_PARTICLES];
 int next_particle = 0;
 
-// Обновление частиц
+
 void update_particles(float dt) {
     for (int i = 0; i < MAX_PARTICLES; i++) {
         if (particles[i].active) {
-            // Обновление позиции
+            
             particles[i].x += particles[i].dx * dt;
             particles[i].y += particles[i].dy * dt;
 
-            // Уменьшение времени жизни
+            
             particles[i].life -= dt;
 
             if (particles[i].life <= 0) {
@@ -22,7 +22,7 @@ void update_particles(float dt) {
     }
 }
 
-// Добавление частиц
+
 void add_particles(float x, float y, float r, float g, float b, int count, float speed, float size, float lifetime) {
     for (int i = 0; i < count; i++) {
         int index = next_particle;
@@ -45,15 +45,15 @@ void add_particles(float x, float y, float r, float g, float b, int count, float
     }
 }
 
-// Создание взрыва
+
 void create_explosion(float x, float y, float r, float g, float b, int count, float size) {
     add_particles(x, y, r, g, b, count, 150.0f, size, 1.0f);
 
-    // Вторичные частицы дыма
+    
     add_particles(x, y, 0.3f, 0.3f, 0.3f, count / 2, 80.0f, size, 1.5f);
 }
 
-// Отрисовка частиц
+
 void draw_particles() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -67,7 +67,7 @@ void draw_particles() {
 
             glColor4f(particles[i].r, particles[i].g, particles[i].b, alpha);
             glBegin(GL_TRIANGLE_FAN);
-            glVertex2f(0, 0); // Центр
+            glVertex2f(0, 0);
             for (int j = 0; j <= 360; j += 45) {
                 float radian = j * M_PI / 180.0f;
                 glVertex2f(cos(radian) * particles[i].size, sin(radian) * particles[i].size);

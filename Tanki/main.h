@@ -13,21 +13,19 @@
 #include <GLFW/glfw3.h>
 
 
-// Константы для типов объектов на карте
+
 #define TILE_EMPTY 0
 #define TILE_WALL 1
 #define TILE_BREAKABLE 2
 #define TILE_WATER 3
 #define TILE_ICE 4
 
-// Константы для состояний игры
 #define GAME_STATE_MENU 0
 #define GAME_STATE_PLAYING 1
 #define GAME_STATE_PAUSED 2
 #define GAME_STATE_GAME_OVER 3
 #define GAME_STATE_WIN 4
 
-// Константы для уровней
 #define LEVEL_START 1
 #define LEVEL_TOWN 2
 #define LEVEL_TOWN_UP 3
@@ -35,7 +33,6 @@
 #define LEVEL_ARENA 5
 #define MAX_LEVEL 5
 
-// Константы
 #define WIDTH 1920
 #define HEIGHT 1080
 #define TANK_SIZE 40
@@ -69,7 +66,6 @@
 #include "render.h"
 #include "game.h"
 
-// Глобальные переменные
 extern Tank player;
 extern Tank bots[MAX_BOTS];
 extern Bullet bullets[MAX_BULLETS * (MAX_BOTS + 1)];
@@ -89,17 +85,18 @@ extern float menu_animation;
 extern float transition_timer;
 extern int next_level;
 extern bool transition_fade_out;
-// Массив частиц для эффектов
+
+
 #define MAX_PARTICLES 1000
 extern Particle particles[MAX_PARTICLES];
 extern int next_particle;
 
-// Информация о уровне
+
 extern LevelInfo level_info[MAX_LEVEL + 1];
 
-// Цвета для различных типов танков и объектов
+
 extern float player_color[3];
 extern float bot_colors[BOT_COUNT][3];
 extern float powerup_colors[POWERUP_COUNT][3];
 
-#endif  /*MAIN_H */
+#endif
