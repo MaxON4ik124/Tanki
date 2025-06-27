@@ -18,11 +18,11 @@ int main() {
     glfwSetKeyCallback(window, key_callback);
     glfwSwapInterval(1);
 
-    
+
     srand((unsigned int)time(NULL));
     init_game();
 
-    
+
     while (!glfwWindowShouldClose(window)) {
         double current_time = glfwGetTime();
         delta_time = current_time - last_time;
@@ -39,13 +39,13 @@ int main() {
             update_level_transition(delta_time);
         }
 
-      
+
         render();
         render_warning_pulse();
         render_darkness_overlay();
         glfwSwapBuffers(window);
-    
+    }
 
-    glfwTerminate();
-    return 0;
-}
+        glfwTerminate();
+        return 0;
+    }
