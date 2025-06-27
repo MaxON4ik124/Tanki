@@ -238,7 +238,7 @@ void render_darkness_overlay(void) {
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
     
-    glColor4f(0.0f, 0.0f, 0.0f, 0.75f);
+    glColor4f(0.0f, 0.0f, 0.0f, 0.65f);
     glBegin(GL_QUADS);
     glVertex2f(0, 40);
     glVertex2f(WIDTH, 40);
