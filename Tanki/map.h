@@ -13,4 +13,6 @@ void generate_map(char* filename);
 void parse_node(char* line, BotGraph* node);
 void link_nodes(BotGraph* nodes, int count);
 int load_graph(const char* filename, BotGraph** out_nodes);
+void free_graph(BotGraph* nodes, int count);
+
 #endif

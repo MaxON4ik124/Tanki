@@ -92,6 +92,8 @@ void parse_node(char* line, BotGraph* node)
     char* p = strchr(line, '}');
     if (!p) {
         node->next_index = 0;
+        node->nextinds = NULL;
+        node->next = NULL;
         return;
     }
     p++;
@@ -120,13 +122,20 @@ void link_nodes(BotGraph* nodes, int count)
     {
         BotGraph* cur = &nodes[i];
 
+        if (cur->next == NULL || cur->nextinds == NULL) {
+            continue;  // Пропускаем узлы без связей
+        }
+
         for (int j = 0; j < cur->next_index; j++)
         {
             int index = cur->nextinds[j];
-            cur->next[j] = nodes[index];
+            if (index >= 0 && index < count) {  // Проверка границ
+                cur->next[j] = &nodes[index];  // Используем адрес, а не значение
+            }
         }
     }
 }
+
 
 int load_graph(const char* filename, BotGraph** out_nodes)
 {
@@ -160,6 +169,19 @@ int load_graph(const char* filename, BotGraph** out_nodes)
 
     *out_nodes = nodes;
     return count;
+}
+void free_graph(BotGraph* nodes, int count) {
+    if (nodes == NULL) return;
+
+    for (int i = 0; i < count; i++) {
+        if (nodes[i].nextinds != NULL) {
+            free(nodes[i].nextinds);
+        }
+        if (nodes[i].next != NULL) {
+            free(nodes[i].next);
+        }
+    }
+    free(nodes);
 }
 
 

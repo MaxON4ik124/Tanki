@@ -6,14 +6,14 @@ int main() {
         fprintf(stderr, "Ошибка инициализации GLFW\n");
         return -1;
     }
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "2D TANKS", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "2D TANKS", monitor, NULL);
     if (!window) {
         fprintf(stderr, "Ошибка создания окна GLFW\n");
         glfwTerminate();
         return -1;
     }
-
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
     glfwSwapInterval(1);

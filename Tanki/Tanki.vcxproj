@@ -157,11 +157,11 @@
     <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="botGraph_1.txt" />
-    <Text Include="botGraph_2.txt" />
-    <Text Include="botGraph_3.txt" />
-    <Text Include="botGraph_4.txt" />
-    <Text Include="botGraph_5.txt" />
+    <Text Include="patrol_start.txt" />
+    <Text Include="patrol_town.txt" />
+    <Text Include="patrol_town_pro.txt" />
+    <Text Include="patrol_maze.txt" />
+    <Text Include="patrol_arena.txt" />
     <Text Include="map_arena.txt" />
     <Text Include="map_maze.txt" />
     <Text Include="map_start.txt" />

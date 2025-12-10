@@ -94,19 +94,19 @@
     <Text Include="map_town_pro.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
-    <Text Include="botGraph_1.txt">
+    <Text Include="patrol_start.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
-    <Text Include="botGraph_2.txt">
+    <Text Include="patrol_town.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
-    <Text Include="botGraph_3.txt">
+    <Text Include="patrol_town_pro.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
-    <Text Include="botGraph_4.txt">
+    <Text Include="patrol_maze.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
-    <Text Include="botGraph_5.txt">
+    <Text Include="patrol_arena.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
   </ItemGroup>

@@ -21,6 +21,14 @@ typedef enum {
     GAME_LEVEL_TRANSITION
 } GameState;
 
+typedef struct BotGraph{
+    int x;
+    int y;
+    int* nextinds;
+    int next_index;
+    struct BotGraph** next;
+} BotGraph;
+
 typedef enum {
     BOT_REGULAR,
     BOT_FAST,
@@ -31,10 +39,10 @@ typedef enum {
 
 typedef struct {
     float x, y;
-    float angle;          
-    float movement_angle; 
-    float target_angle;   
-    float rotation_speed; 
+    float angle;
+    float movement_angle;
+    float target_angle;
+    float rotation_speed;
     int health;
     int max_health;
     bool shooting;
@@ -50,16 +58,16 @@ typedef struct {
     int triple_shot_timer;
     int speed_timer;
     BotType type;
-
-    BotGraph* current_patrol_node;  
-    BotGraph* patrol_graph;         
-    int patrol_graph_size;          
     float target_x, target_y;
     float ai_timer;
     float ai_state_timer;
     int ai_state;
     bool ai_has_target;
+    BotGraph* current_patrol_node;
+    BotGraph* patrol_graph;
+    int patrol_graph_size;
 } Tank;
+
 
 
 typedef struct {
@@ -106,12 +114,5 @@ typedef struct {
     int difficulty;
 } LevelInfo;
 
-typedef struct BotGraph{
-    int x;
-    int y;
-    int* nextinds;
-    int next_index;
-    struct BotGraph* next;
-} BotGraph;
 
 #endif
