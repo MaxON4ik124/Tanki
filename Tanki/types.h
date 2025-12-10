@@ -51,7 +51,9 @@ typedef struct {
     int speed_timer;
     BotType type;
 
-    
+    BotGraph* current_patrol_node;  
+    BotGraph* patrol_graph;         
+    int patrol_graph_size;          
     float target_x, target_y;
     float ai_timer;
     float ai_state_timer;
@@ -103,5 +105,13 @@ typedef struct {
     int bot_count;
     int difficulty;
 } LevelInfo;
+
+typedef struct BotGraph{
+    int x;
+    int y;
+    int* nextinds;
+    int next_index;
+    struct BotGraph* next;
+} BotGraph;
 
 #endif

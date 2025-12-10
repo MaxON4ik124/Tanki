@@ -123,6 +123,28 @@ void init_level(int level_num) {
     player.speed_timer = 0;
     player.invulnerable_timer = 180;
     int bot_count = level_info[level_num].bot_count;
+
+    BotGraph* patrol_graph = NULL;
+    int graph_size = 0;
+    switch (level_num) {
+    case LEVEL_START:
+        graph_size = load_graph("botGraph_1.txt", &patrol_graph);
+        break;
+    case LEVEL_TOWN:
+        graph_size = load_graph("botGraph_2.txt", &patrol_graph);
+        break;
+    case LEVEL_TOWN_UP:
+        graph_size = load_graph("botGraph_3.txt", &patrol_graph);
+        break;
+    case LEVEL_MAZE:
+        graph_size = load_graph("botGraph_4.txt", &patrol_graph);
+        break;
+    case LEVEL_ARENA:
+        graph_size = load_graph("botGraph_5.txt", &patrol_graph);
+        break;
+    }
+
+
     for (int i = 0; i < MAX_BOTS; i++) {
         if (i < bot_count) {
             bots[i].type = rand() % BOT_COUNT;
@@ -172,6 +194,16 @@ void init_level(int level_num) {
             bots[i].ai_state = 0;
             bots[i].ai_state_timer = (float)(rand() % 100) / 10.0f;
             bots[i].ai_has_target = false;
+            bots[i].patrol_graph = patrol_graph;
+            bots[i].patrol_graph_size = graph_size;
+
+            if (graph_size > 0 && patrol_graph != NULL) {
+                
+                int start_node = rand() % graph_size;
+                bots[i].current_patrol_node = &patrol_graph[start_node];
+                bots[i].target_x = bots[i].current_patrol_node->x;
+                bots[i].target_y = bots[i].current_patrol_node->y;
+            }
         }
         else {
             bots[i].active = false;

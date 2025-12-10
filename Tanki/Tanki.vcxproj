@@ -121,15 +121,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\maxis\OneDrive\Рабочий стол\GLFW\SDL2-2.30.8\include;C:\Users\maxis\OneDrive\Рабочий стол\GLFW\SDL2_mixer-2.8.1\include;C:\Users\maxis\OneDrive\Рабочий стол\GLFW\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Maks\Documents\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\maxis\OneDrive\Рабочий стол\GLFW\SDL2-2.30.8\lib\x64;C:\Users\maxis\OneDrive\Рабочий стол\GLFW\SDL2_mixer-2.8.1\lib\x64;C:\Users\maxis\OneDrive\Рабочий стол\GLFW\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;SDL2_mixer.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Maks\Documents\Libraries\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -157,6 +157,11 @@
     <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="botGraph_1.txt" />
+    <Text Include="botGraph_2.txt" />
+    <Text Include="botGraph_3.txt" />
+    <Text Include="botGraph_4.txt" />
+    <Text Include="botGraph_5.txt" />
     <Text Include="map_arena.txt" />
     <Text Include="map_maze.txt" />
     <Text Include="map_start.txt" />
@@ -164,8 +169,6 @@
     <Text Include="map_town_pro.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\OneDrive\Рабочий стол\GLFW\SDL2-2.30.8\lib\x64\SDL2.dll" />
-    <None Include="..\..\..\..\OneDrive\Рабочий стол\GLFW\SDL2_mixer-2.8.1\lib\x64\SDL2_mixer.dll" />
     <None Include="alarm.ogg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

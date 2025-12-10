@@ -51,82 +51,82 @@ void update_bots(float dt) {
             }
 
             bots[i].speed = bots[i].base_speed * speed_multiplier;
-
-            switch (bots[i].ai_state) {
+            // Под нож
+        switch (bots[i].ai_state) {
             case 0:
-                if (bots[i].ai_state_timer <= 0) {
-                    float angle = (float)(rand() % 360) * M_PI / 180.0f;
-                    bots[i].target_x = bots[i].x + cosf(angle) * 300.0f;
-                    bots[i].target_y = bots[i].y + sinf(angle) * 300.0f;
+                if (bots[i].current_patrol_node != NULL) {
+                    float dx = bots[i].target_x - bots[i].x;
+                    float dy = bots[i].target_y - bots[i].y;
+                    float dist = sqrtf(dx * dx + dy * dy);
 
-                    bots[i].target_x = fmaxf(TILE_SIZE, fminf(WIDTH - TILE_SIZE, bots[i].target_x));
-                    bots[i].target_y = fmaxf(TILE_SIZE, fminf(HEIGHT - TILE_SIZE, bots[i].target_y));
+                    if (dist > 5.0f) {
+                        // Движение к текущей цели
+                        float angle = atan2f(dy, dx);
+                        bots[i].angle = angle * 180.0f / M_PI;
 
-                    bots[i].ai_state_timer = 2.0f + (rand() % 30) / 10.0f;
-                }
+                        float move_x = cosf(angle) * bots[i].speed * dt;
+                        float move_y = sinf(angle) * bots[i].speed * dt;
 
-                float dx = bots[i].target_x - bots[i].x;
-                float dy = bots[i].target_y - bots[i].y;
-                float dist = sqrtf(dx * dx + dy * dy);
+                        float new_x = bots[i].x + move_x;
+                        float new_y = bots[i].y + move_y;
 
-                if (dist > 5.0f) {
-                    float angle = atan2f(dy, dx);
-                    bots[i].angle = angle * 180.0f / M_PI;
+                        if (!check_map_collision(new_x, bots[i].y, TANK_SIZE / 2)) {
+                            bots[i].x = new_x;
+                        }
 
-                    float move_x = cosf(angle) * bots[i].speed * dt;
-                    float move_y = sinf(angle) * bots[i].speed * dt;
-
-                    float new_x = bots[i].x + move_x;
-                    float new_y = bots[i].y + move_y;
-
-                    if (!check_map_collision(new_x, bots[i].y, TANK_SIZE / 2)) {
-                        bots[i].x = new_x;
+                        if (!check_map_collision(bots[i].x, new_y, TANK_SIZE / 2)) {
+                            bots[i].y = new_y;
+                        }
                     }
                     else {
-                        bots[i].ai_state_timer = 0;
+                        // Достигли точки - выбираем следующую
+                        if (bots[i].current_patrol_node->next_index > 0) {
+                            int next_idx = rand() % bots[i].current_patrol_node->next_index;
+                            int node_index = bots[i].current_patrol_node->nextinds[next_idx];
+
+                            if (node_index < bots[i].patrol_graph_size) {
+                                bots[i].current_patrol_node = &bots[i].patrol_graph[node_index];
+                                bots[i].target_x = bots[i].current_patrol_node->x;
+                                bots[i].target_y = bots[i].current_patrol_node->y;
+                            }
+                        }
                     }
 
-                    if (!check_map_collision(bots[i].x, new_y, TANK_SIZE / 2)) {
-                        bots[i].y = new_y;
-                    }
-                    else {
-                        bots[i].ai_state_timer = 0;
-                    }
-                }
+                    // Проверка обнаружения игрока
+                    if (bots[i].ai_timer >= 0.5f) {
+                        bots[i].ai_timer = 0;
 
-                if (bots[i].ai_timer >= 0.5f) {
-                    bots[i].ai_timer = 0;
+                        if (player.active) {
+                            float dx = player.x - bots[i].x;
+                            float dy = player.y - bots[i].y;
+                            float dist = sqrtf(dx * dx + dy * dy);
 
-                    if (player.active) {
-                        float dx = player.x - bots[i].x;
-                        float dy = player.y - bots[i].y;
-                        float dist = sqrtf(dx * dx + dy * dy);
+                            if (dist < 400.0f) {
+                                bool line_of_sight = true;
+                                float step_x = dx / dist;
+                                float step_y = dy / dist;
+                                float check_x = bots[i].x;
+                                float check_y = bots[i].y;
 
-                        if (dist < 400.0f) {
-                            bool line_of_sight = true;
-                            float step_x = dx / dist;
-                            float step_y = dy / dist;
-                            float check_x = bots[i].x;
-                            float check_y = bots[i].y;
+                                for (int j = 0; j < (int)dist; j += 10) {
+                                    check_x += step_x * 10;
+                                    check_y += step_y * 10;
 
-                            for (int j = 0; j < (int)dist; j += 10) {
-                                check_x += step_x * 10;
-                                check_y += step_y * 10;
+                                    int tile_x = (int)(check_x / TILE_SIZE);
+                                    int tile_y = (int)(check_y / TILE_SIZE);
 
-                                int tile_x = (int)(check_x / TILE_SIZE);
-                                int tile_y = (int)(check_y / TILE_SIZE);
-
-                                if (tile_x >= 0 && tile_x < MAP_WIDTH && tile_y >= 0 && tile_y < MAP_HEIGHT) {
-                                    if (map[tile_y][tile_x] == TILE_WALL || map[tile_y][tile_x] == TILE_BREAKABLE) {
-                                        line_of_sight = false;
-                                        break;
+                                    if (tile_x >= 0 && tile_x < MAP_WIDTH && tile_y >= 0 && tile_y < MAP_HEIGHT) {
+                                        if (map[tile_y][tile_x] == TILE_WALL || map[tile_y][tile_x] == TILE_BREAKABLE) {
+                                            line_of_sight = false;
+                                            break;
+                                        }
                                     }
                                 }
-                            }
 
-                            if (line_of_sight) {
-                                bots[i].ai_state = 1;
-                                bots[i].ai_state_timer = 5.0f;
+                                if (line_of_sight) {
+                                    bots[i].ai_state = 1;
+                                    bots[i].ai_state_timer = 5.0f;
+                                }
                             }
                         }
                     }
@@ -189,7 +189,7 @@ void update_bots(float dt) {
                                 bots[i].y = new_y;
                             }
                         }
-
+                        // По сюда
                         if (dist < shoot_range && bots[i].cooldown <= 0) {
                             float aim_angle = atan2f(dy, dx) * 180.0f / M_PI;
                             bots[i].angle = aim_angle;
@@ -244,6 +244,8 @@ void update_bots(float dt) {
         }
     }
 }
+
+
 
 void update_bullets(float dt) {
     for (int i = 0; i < MAX_BULLETS * (MAX_BOTS + 1); i++) {
