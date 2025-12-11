@@ -85,8 +85,9 @@ void find_spawn_point(float* x_pos, float* y_pos, int tankType) {
     }
 }
 
-void parse_node(char* line, BotGraph* node)
+void parse_node(char* line, BotGraph* node, int i)
 {
+    node->id = i;
     sscanf(line, " { %d , %d } ", &node->x, &node->y);
 
     char* p = strchr(line, '}');
@@ -159,7 +160,7 @@ int load_graph(const char* filename, BotGraph** out_nodes)
     while (fgets(buffer, sizeof(buffer), f))
     {
         buffer[strcspn(buffer, "\n")] = 0;
-        parse_node(buffer, &nodes[i]);
+        parse_node(buffer, &nodes[i], i+1);
         i++;
     }
 

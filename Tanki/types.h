@@ -22,6 +22,7 @@ typedef enum {
 } GameState;
 
 typedef struct BotGraph{
+    int id;
     int x;
     int y;
     int* nextinds;
@@ -63,9 +64,13 @@ typedef struct {
     float ai_state_timer;
     int ai_state;
     bool ai_has_target;
+    BotGraph* previous_patrol_node;
     BotGraph* current_patrol_node;
     BotGraph* patrol_graph;
     int patrol_graph_size;
+    bool avoiding_obstacle;      
+    float avoidance_timer;       
+    int avoidance_direction;     
 } Tank;
 
 

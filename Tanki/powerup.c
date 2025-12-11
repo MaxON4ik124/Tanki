@@ -72,7 +72,7 @@ void spawn_powerup() {
                 powerups[i].y = y;
                 powerups[i].type = rand() % POWERUP_COUNT;
                 powerups[i].active = true;
-                powerups[i].timer = 1800;
+                powerups[i].timer = 3600;
                 powerups[i].rotation = 0;
                 powerups[i].scale = 1.0f;
                 powerups[i].scaling_up = false;
@@ -97,11 +97,11 @@ void spawn_powerup() {
 void apply_powerup(PowerupType type) {
     switch (type) {
     case POWERUP_HEALTH:
-        player.health = fmin(player.max_health, player.health + 50);
+        player.health = fmin(player.max_health, player.health + BASE_TANK_HP * 0.2);
         break;
 
     case POWERUP_SPEED:
-        player.speed_timer = 300;
+        player.speed_timer = 1200;
         for (int i = 0; i < MAX_BULLETS * (MAX_BOTS + 1); i++) {
             if (!bullets[i].active) {
                 bullets[i].active = true;
@@ -118,19 +118,19 @@ void apply_powerup(PowerupType type) {
         break;
 
     case POWERUP_RAPID_FIRE:
-        player.rapid_fire_timer = 300;
+        player.rapid_fire_timer = 1200;
         break;
 
     case POWERUP_SHIELD:
-        player.shield_timer = 300;
+        player.shield_timer = 1200;
         break;
 
     case POWERUP_TRIPLE_SHOT:
-        player.triple_shot_timer = 300;
+        player.triple_shot_timer = 1200;
         break;
     }
 
-    message_timer = 120;
+    message_timer = 1200;
 }
 
 void draw_powerup(Powerup powerup) {

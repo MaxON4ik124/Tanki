@@ -37,8 +37,8 @@
 #define HEIGHT 1080
 #define TANK_SIZE 40
 #define BULLET_SIZE 8
-#define TANK_SPEED 120.0f;
-#define BOT_SPEED 100.0f
+#define TANK_SPEED 220.0f
+#define BOT_SPEED 150.0f
 #define BULLET_SPEED 800.0f
 #define MAX_BULLETS 10
 #define MAP_WIDTH 39
@@ -50,7 +50,8 @@
 #define RELOAD_TIME 60
 #define TILE_SIZE (WIDTH / MAP_WIDTH)
 #define M_PI 3.14f
-
+#define BASE_TANK_HP 500
+#define BASE_TANK_DAMAGE 40
 
 #define TRANSITION_DURATION 5.0f
 #define FADE_OUT_TIME 3.0f        

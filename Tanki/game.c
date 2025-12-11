@@ -59,8 +59,8 @@ void init_game() {
     player.movement_angle = -90.0f;
     player.target_angle = 0.0f;
     player.rotation_speed = 180.0f;
-    player.health = 100;
-    player.max_health = 100;
+    player.health = BASE_TANK_HP;
+    player.max_health = BASE_TANK_HP;
     player.speed = TANK_SPEED;
     player.base_speed = TANK_SPEED;
     player.active = true;
@@ -158,35 +158,39 @@ void init_level(int level_num) {
     for (int i = 0; i < MAX_BOTS; i++) {
         if (i < bot_count) {
             bots[i].type = rand() % BOT_COUNT;
+            // Инициализация обхода препятствий
+            //bots[i].avoiding_obstacle = false;
+            //bots[i].avoidance_timer = 0.0f;
+            //bots[i].avoidance_direction = 0;
 
             switch (bots[i].type) {
             case BOT_FAST:
-                bots[i].health = 50;
-                bots[i].max_health = 50;
+                bots[i].health = BASE_TANK_HP * 0.5;
+                bots[i].max_health = BASE_TANK_HP * 0.5;
                 bots[i].speed = BOT_SPEED * 1.5f;
                 bots[i].base_speed = BOT_SPEED * 1.5f;
                 bots[i].cooldown = RELOAD_TIME * 1.2;
                 bots[i].rotation_speed = 210.0f;
                 break;
             case BOT_HEAVY:
-                bots[i].health = 150;
-                bots[i].max_health = 150;
+                bots[i].health = BASE_TANK_HP * 1.5;
+                bots[i].max_health = BASE_TANK_HP * 1.5;
                 bots[i].speed = BOT_SPEED * 0.7f;
                 bots[i].base_speed = BOT_SPEED * 0.7f;
                 bots[i].cooldown = RELOAD_TIME * 1.5;
                 bots[i].rotation_speed = 90.0f;
                 break;
             case BOT_SNIPER:
-                bots[i].health = 75;
-                bots[i].max_health = 75;
+                bots[i].health = BASE_TANK_HP * 0.8;
+                bots[i].max_health = BASE_TANK_HP * 0.8;
                 bots[i].speed = BOT_SPEED * 0.9f;
                 bots[i].base_speed = BOT_SPEED * 0.9f;
                 bots[i].cooldown = RELOAD_TIME * 2.0;
                 bots[i].rotation_speed = 150.0f;
                 break;
             default:
-                bots[i].health = 100;
-                bots[i].max_health = 100;
+                bots[i].health = BASE_TANK_HP;
+                bots[i].max_health = BASE_TANK_HP;
                 bots[i].speed = BOT_SPEED;
                 bots[i].base_speed = BOT_SPEED;
                 bots[i].cooldown = RELOAD_TIME;
@@ -210,10 +214,13 @@ void init_level(int level_num) {
             bots[i].patrol_graph_size = graph_size;
 
             if (graph_size > 0 && patrol_graph != NULL) {
-                int start_node = 0;
-                bots[i].current_patrol_node = &patrol_graph[start_node];
+                if (level_num == LEVEL_MAZE)
+                    bots[i].current_patrol_node = &patrol_graph[i];
+                else
+                    bots[i].current_patrol_node = &patrol_graph[0];
                 bots[i].target_x = bots[i].current_patrol_node->x * TILE_SIZE + TILE_SIZE / 2;
                 bots[i].target_y = bots[i].current_patrol_node->y * TILE_SIZE + TILE_SIZE / 2;
+                bots[i].previous_patrol_node = NULL;
             }
             else {
                 bots[i].current_patrol_node = NULL;
@@ -234,7 +241,6 @@ void init_level(int level_num) {
     sprintf(game_message, "Level %d: %s", level_num, level_info[level_num].name);
     message_timer = 180;
     powerup_spawn_timer = 1800;
-    // В самом конце init_level
     old_patrol_graph = patrol_graph;
     old_graph_size = graph_size;
 }
