@@ -22,29 +22,49 @@ int main() {
     srand((unsigned int)time(NULL));
     init_game();
 
+    // перед циклом
+    last_time = glfwGetTime();
+
+    const double FIXED_DT = 1.0 / FPS;
+    double accumulator = 0.0;
 
     while (!glfwWindowShouldClose(window)) {
-        double current_time = glfwGetTime();
-        delta_time = current_time - last_time;
-        last_time = current_time;
-        animation_time += delta_time;
+        double now = glfwGetTime();
+        double frame_dt = now - last_time;
+        last_time = now;
 
+        
+        if (frame_dt > 0.25) frame_dt = 0.25;
+
+        accumulator += frame_dt;
+        animation_time += frame_dt;
+
+        
         glfwPollEvents();
-        process_input(window);
 
-        if (game_state == GAME_PLAYING) {
-            update_game(delta_time);
+        
+        while (accumulator >= FIXED_DT) {
+            delta_time = FIXED_DT;              
+            process_input(window);
+
+            if (game_state == GAME_PLAYING) {
+                update_game((float)FIXED_DT);
+            }
+            else if (game_state == GAME_LEVEL_TRANSITION) {
+                update_level_transition((float)FIXED_DT);
+            }
+
+            accumulator -= FIXED_DT;
         }
-        else if (game_state == GAME_LEVEL_TRANSITION) {
-            update_level_transition(delta_time);
-        }
 
-
+        
         render();
         render_warning_pulse();
         render_darkness_overlay();
+
         glfwSwapBuffers(window);
     }
+
 
         glfwTerminate();
         return 0;
