@@ -21,14 +21,16 @@ typedef enum {
     GAME_LEVEL_TRANSITION
 } GameState;
 
-typedef struct BotGraph{
+#define BOTGRAPH_MAX_LINKS 8
+
+typedef struct BotGraph {
     int id;
     int x;
     int y;
-    int* nextinds;
-    int next_index;
-    struct BotGraph** next;
+    int next_index;                 // how many outgoing links
+    int nextinds[BOTGRAPH_MAX_LINKS]; // indices of next nodes (1..N as stored in patrol_*.txt)
 } BotGraph;
+
 
 typedef enum {
     BOT_REGULAR,
@@ -68,9 +70,9 @@ typedef struct {
     BotGraph* current_patrol_node;
     BotGraph* patrol_graph;
     int patrol_graph_size;
-    bool avoiding_obstacle;      
-    float avoidance_timer;       
-    int avoidance_direction;     
+    bool avoiding_obstacle;
+    float avoidance_timer;
+    int avoidance_direction;
 } Tank;
 
 

@@ -38,6 +38,9 @@ void spawn_powerup() {
             bool valid_position = false;
             int attempts = 0;
 
+            const float min_dist = TANK_SIZE * 2.0f;
+            const float min_dist2 = min_dist * min_dist;
+
             while (!valid_position && attempts < 50) {
                 int tile_x = rand() % (MAP_WIDTH - 2) + 1;
                 int tile_y = rand() % (MAP_HEIGHT - 2) + 1;
@@ -48,12 +51,12 @@ void spawn_powerup() {
 
                     bool too_close = false;
 
-                    if (player.active && distance(x, y, player.x, player.y) < TANK_SIZE * 2) {
+                    if (player.active && dist2f(x, y, player.x, player.y) < min_dist2) {
                         too_close = true;
                     }
 
                     for (int j = 0; j < MAX_BOTS; j++) {
-                        if (bots[j].active && distance(x, y, bots[j].x, bots[j].y) < TANK_SIZE * 2) {
+                        if (bots[j].active && dist2f(x, y, bots[j].x, bots[j].y) < min_dist2) {
                             too_close = true;
                             break;
                         }

@@ -1,4 +1,5 @@
 #include "main.h"
+#include <ctype.h>
 
 
 int map[MAP_HEIGHT][MAP_WIDTH] = { 0 };
@@ -31,7 +32,7 @@ void generate_map(char* filename)
 bool check_map_collision(float x, float y, float radius) {
     int tile_size = TILE_SIZE;
 
-    
+
     int start_x = (int)((x - radius) / tile_size);
     int end_x = (int)((x + radius) / tile_size);
     int start_y = (int)((y - radius) / tile_size);
@@ -63,9 +64,9 @@ bool check_map_collision(float x, float y, float radius) {
 }
 
 void find_spawn_point(float* x_pos, float* y_pos, int tankType) {
-    for (int y = 1;y < MAP_HEIGHT - 1;y++)
+    for (int y = 1; y < MAP_HEIGHT - 1; y++)
     {
-        for (int x = 1;x < MAP_WIDTH - 1;x++)
+        for (int x = 1; x < MAP_WIDTH - 1; x++)
         {
             if (map[y][x] == 10 && tankType == 0)
             {
@@ -85,58 +86,48 @@ void find_spawn_point(float* x_pos, float* y_pos, int tankType) {
     }
 }
 
-void parse_node(char* line, BotGraph* node, int i)
-{
-    node->id = i;
-    sscanf(line, " { %d , %d } ", &node->x, &node->y);
 
-    char* p = strchr(line, '}');
-    if (!p) {
-        node->next_index = 0;
-        node->nextinds = NULL;
-        node->next = NULL;
-        return;
-    }
-    p++;
-    node->nextinds = malloc(sizeof(int) * 8);
+// Parses one patrol node line of the form:
+//   { x , y } <list of next node indices>
+// Indices are stored exactly as in the patrol_*.txt files (usually 1-based).
+static void parse_node(const char* line, BotGraph* node, int id)
+{
+    node->id = id;
+    node->x = 0;
+    node->y = 0;
     node->next_index = 0;
 
-    while (*p)
-    {
-        while (*p && isspace(*p))
-            p++;
+    // Parse "{ x , y }"
+    sscanf(line, " { %d , %d } ", &node->x, &node->y);
 
-        if (isdigit(*p))
-        {
-            int value = strtol(p, &p, 10);
-            node->nextinds[node->next_index++] = value;
-        }
-        else
-        {
-            p++;
-        }
+    const char* p = strchr(line, '}');
+    if (!p) {
+        return;
     }
-}
-void link_nodes(BotGraph* nodes, int count)
-{
-    for (int i = 0; i < count; i++)
-    {
-        BotGraph* cur = &nodes[i];
+    p++; // move past '}'
 
-        if (cur->next == NULL || cur->nextinds == NULL) {
-            continue;  // Пропускаем узлы без связей
+    // Parse all integers after the closing brace
+    while (*p) {
+        while (*p && isspace((unsigned char)*p)) {
+            p++;
         }
 
-        for (int j = 0; j < cur->next_index; j++)
-        {
-            int index = cur->nextinds[j];
-            if (index >= 0 && index < count) {  // Проверка границ
-                cur->next[j] = &nodes[index];  // Используем адрес, а не значение
+        if (isdigit((unsigned char)*p)) {
+            char* endp = NULL;
+            long value = strtol(p, &endp, 10);
+            if (endp != NULL && endp != p) {
+                if (node->next_index < BOTGRAPH_MAX_LINKS) {
+                    node->nextinds[node->next_index++] = (int)value;
+                }
+                p = endp;
+                continue;
             }
         }
+
+        // Skip any non-digit character
+        p++;
     }
 }
-
 
 int load_graph(const char* filename, BotGraph** out_nodes)
 {
@@ -146,7 +137,6 @@ int load_graph(const char* filename, BotGraph** out_nodes)
         return -1;
     }
 
-
     int count = 0;
     char buffer[256];
 
@@ -155,34 +145,29 @@ int load_graph(const char* filename, BotGraph** out_nodes)
 
     rewind(f);
 
-    BotGraph* nodes = calloc(count, sizeof(BotGraph));
-    int i = 0;
-    while (fgets(buffer, sizeof(buffer), f))
-    {
-        buffer[strcspn(buffer, "\n")] = 0;
-        parse_node(buffer, &nodes[i], i+1);
-        i++;
+    BotGraph* nodes = (BotGraph*)calloc((size_t)count, sizeof(BotGraph));
+    if (!nodes) {
+        fclose(f);
+        return -1;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (!fgets(buffer, sizeof(buffer), f)) {
+            break;
+        }
+        parse_node(buffer, &nodes[i], i + 1);
     }
 
     fclose(f);
 
-    link_nodes(nodes, count);
-
     *out_nodes = nodes;
     return count;
 }
-void free_graph(BotGraph* nodes, int count) {
-    if (nodes == NULL) return;
 
-    for (int i = 0; i < count; i++) {
-        if (nodes[i].nextinds != NULL) {
-            free(nodes[i].nextinds);
-        }
-        if (nodes[i].next != NULL) {
-            free(nodes[i].next);
-        }
-    }
+void free_graph(BotGraph* nodes, int count)
+{
+    (void)count;
+    if (nodes == NULL) return;
     free(nodes);
 }
-
 

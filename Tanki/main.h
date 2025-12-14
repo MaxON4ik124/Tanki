@@ -16,6 +16,31 @@
 #include <string.h>
 #include <GLFW/glfw3.h>
 
+#include <float.h>
+
+// =========================
+// Fast math helpers (MSVC)
+// =========================
+#ifndef FORCEINLINE
+#if defined(_MSC_VER)
+#define FORCEINLINE __forceinline
+#else
+#define FORCEINLINE inline
+#endif
+#endif
+
+static FORCEINLINE float dist2f(float x1, float y1, float x2, float y2)
+{
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+    return dx * dx + dy * dy;
+}
+
+static FORCEINLINE float clampf(float v, float a, float b)
+{
+    return v < a ? a : (v > b ? b : v);
+}
+
 
 
 #define TILE_EMPTY 0
@@ -73,6 +98,7 @@
 #define M_PI 3.14f
 #define BASE_TANK_HP 500
 #define BASE_TANK_DAMAGE 40
+#define BOTGRAPH_MAX_LINKS 10
 
 #define TRANSITION_DURATION 5.0f
 #define FADE_OUT_TIME 3.0f        
