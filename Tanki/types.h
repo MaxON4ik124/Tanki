@@ -107,7 +107,7 @@ typedef struct {
     float life;
     float max_life;
     float size;
-    float r, g, b;
+    uint8_t r, g, b;
     bool active;
 } Particle;
 

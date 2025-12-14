@@ -12,9 +12,9 @@
 
 
 typedef struct {
-    float x, y;
-    float distance;
-    bool blocked;
+    int16_t x, y;
+    uint16_t distance;
+    uint8_t blocked;
 } VisibilityPoint;
 
 extern bool darkness_active;
