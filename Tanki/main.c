@@ -34,10 +34,12 @@ int main(void) {
 
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
+
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "2D TANKS", NULL, NULL);
+
     // Create a smaller fullscreen video mode to reduce default framebuffer memory.
     // WIDTH/HEIGHT remain the logical coordinate system used by the game.
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "2D TANKS", NULL, NULL);
-
+   /* GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "2D TANKS", NULL, NULL);*/
     if (!window) {
         // Fallback: if the scaled video mode isn't supported, try the logical size.
         window = glfwCreateWindow(WIDTH, HEIGHT, "2D TANKS", monitor, NULL);

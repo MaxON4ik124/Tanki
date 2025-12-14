@@ -26,138 +26,237 @@ void draw_text(const char* text, float x, float y, float scale, float r, float g
 }
 
 void draw_map() {
+    // ОПТИМИЗАЦИЯ #2: Предвычисление констант (Strength Reduction)
+    const float QUARTER = TILE_SIZE * 0.25f;
+    const float HALF = TILE_SIZE * 0.5f;
+    const float THREE_QUARTERS = TILE_SIZE * 0.75f;
+    const float EIGHTH = TILE_SIZE * 0.125f;
+    const float FIFTH = TILE_SIZE * 0.2f;
+
+    // ========== ФАЗА 1: ВСЕ ФОНЫ ОДНИМ БАТЧЕМ ==========
+    // ОПТИМИЗАЦИЯ #1: Loop Invariant Code Motion (батчинг)
+    glColor3f(0.2f, 0.2f, 0.2f);
+    glBegin(GL_QUADS);
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             float x_pos = x * TILE_SIZE;
             float y_pos = y * TILE_SIZE;
-            glColor3f(0.2f, 0.2f, 0.2f);
-            glBegin(GL_QUADS);
             glVertex2f(x_pos, y_pos);
             glVertex2f(x_pos + TILE_SIZE, y_pos);
             glVertex2f(x_pos + TILE_SIZE, y_pos + TILE_SIZE);
             glVertex2f(x_pos, y_pos + TILE_SIZE);
-            glEnd();
+        }
+    }
+    glEnd();
 
-            int texture_variant = texture_map[y][x];
-            glColor3f(0.25f, 0.25f, 0.25f);
+    // ========== ФАЗА 2: ТЕКСТУРЫ ПО ТИПАМ ==========
 
-            if (texture_variant == 1) {
-                glBegin(GL_LINES);
-                glVertex2f(x_pos + TILE_SIZE / 4, y_pos + TILE_SIZE / 4);
-                glVertex2f(x_pos + TILE_SIZE * 3 / 4, y_pos + TILE_SIZE * 3 / 4);
-                glVertex2f(x_pos + TILE_SIZE * 3 / 4, y_pos + TILE_SIZE / 4);
-                glVertex2f(x_pos + TILE_SIZE / 4, y_pos + TILE_SIZE * 3 / 4);
-                glEnd();
+    // Текстура тип 1 (диагональные линии)
+    glColor3f(0.25f, 0.25f, 0.25f);
+    glBegin(GL_LINES);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (texture_map[y][x] == 1) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
+                glVertex2f(x_pos + QUARTER, y_pos + QUARTER);
+                glVertex2f(x_pos + THREE_QUARTERS, y_pos + THREE_QUARTERS);
+                glVertex2f(x_pos + THREE_QUARTERS, y_pos + QUARTER);
+                glVertex2f(x_pos + QUARTER, y_pos + THREE_QUARTERS);
             }
-            else if (texture_variant == 2) {
-                glBegin(GL_LINE_LOOP);
-                glVertex2f(x_pos + TILE_SIZE / 4, y_pos + TILE_SIZE / 4);
-                glVertex2f(x_pos + TILE_SIZE * 3 / 4, y_pos + TILE_SIZE / 4);
-                glVertex2f(x_pos + TILE_SIZE * 3 / 4, y_pos + TILE_SIZE * 3 / 4);
-                glVertex2f(x_pos + TILE_SIZE / 4, y_pos + TILE_SIZE * 3 / 4);
-                glEnd();
+        }
+    }
+    glEnd();
+
+    // Текстура тип 2 (рамки) - используем GL_LINES вместо LINE_LOOP
+    glBegin(GL_LINES);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (texture_map[y][x] == 2) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
+                // Верхняя линия
+                glVertex2f(x_pos + QUARTER, y_pos + QUARTER);
+                glVertex2f(x_pos + THREE_QUARTERS, y_pos + QUARTER);
+                // Правая линия
+                glVertex2f(x_pos + THREE_QUARTERS, y_pos + QUARTER);
+                glVertex2f(x_pos + THREE_QUARTERS, y_pos + THREE_QUARTERS);
+                // Нижняя линия
+                glVertex2f(x_pos + THREE_QUARTERS, y_pos + THREE_QUARTERS);
+                glVertex2f(x_pos + QUARTER, y_pos + THREE_QUARTERS);
+                // Левая линия
+                glVertex2f(x_pos + QUARTER, y_pos + THREE_QUARTERS);
+                glVertex2f(x_pos + QUARTER, y_pos + QUARTER);
             }
-            else if (texture_variant == 3) {
-                glBegin(GL_POINTS);
+        }
+    }
+    glEnd();
+
+    // Текстура тип 3 (точки)
+    glBegin(GL_POINTS);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (texture_map[y][x] == 3) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
                 for (int i = 0; i < 5; i++) {
-                    glVertex2f(x_pos + TILE_SIZE / 4 + i * TILE_SIZE / 8, y_pos + TILE_SIZE / 2);
+                    glVertex2f(x_pos + QUARTER + i * EIGHTH, y_pos + HALF);
                 }
-                glEnd();
             }
+        }
+    }
+    glEnd();
 
-            switch (map[y][x]) {
-            case TILE_WALL:
-            {
-                glColor3f(0.5f, 0.5f, 0.5f);
-                glBegin(GL_QUADS);
+    // ========== ФАЗА 3: СТЕНЫ (ОСНОВА) ==========
+    glColor3f(0.5f, 0.5f, 0.5f);
+    glBegin(GL_QUADS);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (map[y][x] == TILE_WALL) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
                 glVertex2f(x_pos, y_pos);
                 glVertex2f(x_pos + TILE_SIZE, y_pos);
                 glVertex2f(x_pos + TILE_SIZE, y_pos + TILE_SIZE);
                 glVertex2f(x_pos, y_pos + TILE_SIZE);
-                glEnd();
+            }
+        }
+    }
+    glEnd();
 
-                glColor3f(0.4f, 0.4f, 0.4f);
-                glBegin(GL_LINES);
+    // СТЕНЫ (ДЕТАЛИ - ЛИНИИ)
+    glColor3f(0.4f, 0.4f, 0.4f);
+    glBegin(GL_LINES);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (map[y][x] == TILE_WALL) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
+                // Горизонтальные линии
                 for (int i = 0; i < TILE_SIZE; i += TILE_SIZE / 4) {
                     glVertex2f(x_pos, y_pos + i);
                     glVertex2f(x_pos + TILE_SIZE, y_pos + i);
                 }
+                // Вертикальные линии
                 for (int i = 0; i < TILE_SIZE; i += TILE_SIZE / 4) {
                     glVertex2f(x_pos + i, y_pos);
                     glVertex2f(x_pos + i, y_pos + TILE_SIZE);
                 }
-                glEnd();
-                break;
             }
-            case TILE_BREAKABLE:
-            {
-                glColor3f(0.6f, 0.3f, 0.0f);
-                glBegin(GL_QUADS);
+        }
+    }
+    glEnd();
+
+    // ========== ФАЗА 4: РАЗРУШАЕМЫЕ СТЕНЫ (ОСНОВА) ==========
+    glColor3f(0.6f, 0.3f, 0.0f);
+    glBegin(GL_QUADS);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (map[y][x] == TILE_BREAKABLE) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
                 glVertex2f(x_pos, y_pos);
                 glVertex2f(x_pos + TILE_SIZE, y_pos);
                 glVertex2f(x_pos + TILE_SIZE, y_pos + TILE_SIZE);
                 glVertex2f(x_pos, y_pos + TILE_SIZE);
-                glEnd();
-
-                glColor3f(0.5f, 0.25f, 0.0f);
-                glBegin(GL_LINES);
-                glVertex2f(x_pos + TILE_SIZE / 4, y_pos + TILE_SIZE / 4);
-                glVertex2f(x_pos + TILE_SIZE * 3 / 4, y_pos + TILE_SIZE / 2);
-
-                glVertex2f(x_pos + TILE_SIZE / 2, y_pos + TILE_SIZE / 4);
-                glVertex2f(x_pos + TILE_SIZE / 4, y_pos + TILE_SIZE * 3 / 4);
-
-                glVertex2f(x_pos + TILE_SIZE * 3 / 4, y_pos + TILE_SIZE / 4);
-                glVertex2f(x_pos + TILE_SIZE / 2, y_pos + TILE_SIZE * 3 / 4);
-                glEnd();
-                break;
             }
+        }
+    }
+    glEnd();
 
-            case TILE_WATER:
-            {
+    // РАЗРУШАЕМЫЕ СТЕНЫ (ДЕТАЛИ)
+    glColor3f(0.5f, 0.25f, 0.0f);
+    glBegin(GL_LINES);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (map[y][x] == TILE_BREAKABLE) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
+
+                glVertex2f(x_pos + QUARTER, y_pos + QUARTER);
+                glVertex2f(x_pos + THREE_QUARTERS, y_pos + HALF);
+
+                glVertex2f(x_pos + HALF, y_pos + QUARTER);
+                glVertex2f(x_pos + QUARTER, y_pos + THREE_QUARTERS);
+
+                glVertex2f(x_pos + THREE_QUARTERS, y_pos + QUARTER);
+                glVertex2f(x_pos + HALF, y_pos + THREE_QUARTERS);
+            }
+        }
+    }
+    glEnd();
+
+    // ========== ФАЗА 5: ВОДА (ОСНОВА) ==========
+    glColor3f(0.0f, 0.3f, 0.7f);
+    glBegin(GL_QUADS);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (map[y][x] == TILE_WATER) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
+                glVertex2f(x_pos, y_pos);
+                glVertex2f(x_pos + TILE_SIZE, y_pos);
+                glVertex2f(x_pos + TILE_SIZE, y_pos + TILE_SIZE);
+                glVertex2f(x_pos, y_pos + TILE_SIZE);
+            }
+        }
+    }
+    glEnd();
+
+    // ВОДА (АНИМИРОВАННЫЕ ВОЛНЫ)
+    glColor3f(0.0f, 0.4f, 0.8f);
+    glBegin(GL_LINES);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (map[y][x] == TILE_WATER) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
                 float water_offset = sinf((animation_time * 3.0f) + (x * 0.5f) + (y * 0.3f)) * 2.0f;
 
-                glColor3f(0.0f, 0.3f, 0.7f);
-                glBegin(GL_QUADS);
-                glVertex2f(x_pos, y_pos);
-                glVertex2f(x_pos + TILE_SIZE, y_pos);
-                glVertex2f(x_pos + TILE_SIZE, y_pos + TILE_SIZE);
-                glVertex2f(x_pos, y_pos + TILE_SIZE);
-                glEnd();
-
-                glColor3f(0.0f, 0.4f, 0.8f);
-                glBegin(GL_LINES);
                 for (int i = 0; i < TILE_SIZE; i += TILE_SIZE / 5) {
                     glVertex2f(x_pos, y_pos + i + water_offset);
                     glVertex2f(x_pos + TILE_SIZE, y_pos + i + water_offset);
                 }
-                glEnd();
-                break;
-            }
-
-            case TILE_ICE:
-            {
-                glColor3f(0.8f, 0.9f, 1.0f);
-                glBegin(GL_QUADS);
-                glVertex2f(x_pos, y_pos);
-                glVertex2f(x_pos + TILE_SIZE, y_pos);
-                glVertex2f(x_pos + TILE_SIZE, y_pos + TILE_SIZE);
-                glVertex2f(x_pos, y_pos + TILE_SIZE);
-                glEnd();
-
-                glColor3f(0.7f, 0.8f, 0.9f);
-                glBegin(GL_LINES);
-                glVertex2f(x_pos, y_pos);
-                glVertex2f(x_pos + TILE_SIZE, y_pos + TILE_SIZE);
-
-                glVertex2f(x_pos + TILE_SIZE, y_pos);
-                glVertex2f(x_pos, y_pos + TILE_SIZE);
-                glEnd();
-                break;
-            }
             }
         }
     }
+    glEnd();
+
+    // ========== ФАЗА 6: ЛЁД (ОСНОВА) ==========
+    glColor3f(0.8f, 0.9f, 1.0f);
+    glBegin(GL_QUADS);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (map[y][x] == TILE_ICE) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
+                glVertex2f(x_pos, y_pos);
+                glVertex2f(x_pos + TILE_SIZE, y_pos);
+                glVertex2f(x_pos + TILE_SIZE, y_pos + TILE_SIZE);
+                glVertex2f(x_pos, y_pos + TILE_SIZE);
+            }
+        }
+    }
+    glEnd();
+
+    // ЛЁД (ДЕТАЛИ - КРЕСТ)
+    glColor3f(0.7f, 0.8f, 0.9f);
+    glBegin(GL_LINES);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (map[y][x] == TILE_ICE) {
+                float x_pos = x * TILE_SIZE;
+                float y_pos = y * TILE_SIZE;
+
+                glVertex2f(x_pos, y_pos);
+                glVertex2f(x_pos + TILE_SIZE, y_pos + TILE_SIZE);
+
+                glVertex2f(x_pos + TILE_SIZE, y_pos);
+                glVertex2f(x_pos, y_pos + TILE_SIZE);
+            }
+        }
+    }
+    glEnd();
 }
 
 void draw_ui() {
