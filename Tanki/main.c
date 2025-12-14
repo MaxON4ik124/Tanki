@@ -8,7 +8,7 @@ int main() {
     }
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "2D TANKS", monitor, NULL);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "2D TANKS", NULL, NULL);
     if (!window) {
         fprintf(stderr, "Ошибка создания окна GLFW\n");
         glfwTerminate();
