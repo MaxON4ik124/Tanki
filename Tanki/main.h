@@ -2,8 +2,12 @@
 #define MAIN_H
 
 #define _CRT_SECURE_NO_WARNINGS
-#define STB_EASY_FONT_IMPLEMENTATION
-#include "stb_easy_font.h"
+
+// NOTE: stb_easy_font is only needed for rendering text.
+// Keep it out of the global header to avoid duplicating its static tables in
+// every translation unit (reduces binary size / global data footprint).
+
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -35,6 +39,22 @@
 
 #define WIDTH 1920
 #define HEIGHT 1080
+
+// --- Default framebuffer memory saving ---
+// The game uses WIDTH/HEIGHT as a *logical* coordinate system.
+// To reduce default framebuffer memory (color/depth/stencil), we can create a
+// smaller fullscreen video mode.
+//
+// 1920x1080 -> 1280x720 when scale = 2/3.
+// You can set SCALE_NUM/SCALE_DEN to 1/1 to restore native resolution.
+#ifndef WINDOW_SCALE_NUM
+#define WINDOW_SCALE_NUM 2
+#endif
+#ifndef WINDOW_SCALE_DEN
+#define WINDOW_SCALE_DEN 3
+#endif
+#define WINDOW_WIDTH  (WIDTH  * WINDOW_SCALE_NUM / WINDOW_SCALE_DEN)
+#define WINDOW_HEIGHT (HEIGHT * WINDOW_SCALE_NUM / WINDOW_SCALE_DEN)
 #define TANK_SIZE 40
 #define BULLET_SIZE 8
 #define TANK_SPEED 220.0f

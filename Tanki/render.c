@@ -1,9 +1,16 @@
-#include "main.h"
+﻿#include "main.h"
+
+// stb_easy_font is only used here; keeping it out of main.h avoids duplicating
+// its static font tables in every .c file.
+#include "stb_easy_font.h"
 
 void draw_text(const char* text, float x, float y, float scale, float r, float g, float b) {
     if (!text || strlen(text) == 0) return;
 
-    static char buffer[99999];
+    // NOTE: stb_easy_font writes vertex data into this buffer.
+    // The original sample uses ~100 KB; for our UI strings a much smaller buffer is enough.
+    // Keeping it smaller reduces static RAM usage.
+    static char buffer[32768];
     int num_quads = stb_easy_font_print(x, y, (char*)text, NULL, buffer, sizeof(buffer));
 
     if (num_quads > 0) {
@@ -367,7 +374,8 @@ void draw_game_over() {
 
 void render() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    // Stencil is cleared inside render_darkness_overlay() only when needed.
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

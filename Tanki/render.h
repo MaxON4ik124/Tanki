@@ -2,7 +2,7 @@
 #define RENDER_H
 
 #include "main.h"
-
+#include "stb_easy_font.h"
 
 void draw_map(void);
 void draw_ui(void);
