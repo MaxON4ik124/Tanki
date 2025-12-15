@@ -30,7 +30,7 @@ int main(void) {
     glfwWindowHint(GLFW_RED_BITS, 5);
     glfwWindowHint(GLFW_GREEN_BITS, 6);
     glfwWindowHint(GLFW_BLUE_BITS, 5);
-    glfwWindowHint(GLFW_ALPHA_BITS, 0);
+    glfwWindowHint(GLFW_ALPHA_BITS, 8);
 
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
@@ -96,6 +96,16 @@ int main(void) {
 
             accumulator -= FIXED_DT;
         }
+        printf("FB bits: R%d G%d B%d A%d D%d S%d\n",
+            glfwGetWindowAttrib(window, GLFW_RED_BITS),
+            glfwGetWindowAttrib(window, GLFW_GREEN_BITS),
+            glfwGetWindowAttrib(window, GLFW_BLUE_BITS),
+            glfwGetWindowAttrib(window, GLFW_ALPHA_BITS),
+            glfwGetWindowAttrib(window, GLFW_DEPTH_BITS),
+            glfwGetWindowAttrib(window, GLFW_STENCIL_BITS));
+
+        int s = 0; glGetIntegerv(GL_STENCIL_BITS, &s);
+        printf("GL_STENCIL_BITS=%d\n", s);
 
         // render() already draws all overlays; don't draw them twice here.
         render();
