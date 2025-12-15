@@ -158,10 +158,7 @@ void init_level(int level_num) {
     for (int i = 0; i < MAX_BOTS; i++) {
         if (i < bot_count) {
             bots[i].type = rand() % BOT_COUNT;
-            // Инициализация обхода препятствий
-            //bots[i].avoiding_obstacle = false;
-            //bots[i].avoidance_timer = 0.0f;
-            //bots[i].avoidance_direction = 0;
+
 
             switch (bots[i].type) {
             case BOT_FAST:

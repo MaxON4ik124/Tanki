@@ -91,12 +91,11 @@ static FORCEINLINE float clampf(float v, float a, float b)
 #define MAX_BOTS 5
 #define MAX_POWERUPS 5
 #define POWERUP_SIZE 25
-#define RESPAWN_TIME 12
-#define RELOAD_TIME 60
+#define RELOAD_TIME 30
 #define FPS 60.0f;
 #define TILE_SIZE (WIDTH / MAP_WIDTH)
 #define M_PI 3.14f
-#define BASE_TANK_HP 500
+#define BASE_TANK_HP 200
 #define BASE_TANK_DAMAGE 40
 #define BOTGRAPH_MAX_LINKS 10
 
